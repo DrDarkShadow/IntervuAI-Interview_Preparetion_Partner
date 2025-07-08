@@ -1,74 +1,128 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // This script will handle the logic for the setup page
-    const topicForm = document.getElementById('topic-form');
-    const companyForm = document.getElementById('company-form');
-    const setupTitle = document.getElementById('setup-title');
-    const setupDescription = document.getElementById('setup-description');
-
-    // Check if we are on the setup page
-    if (topicForm && companyForm && setupTitle && setupDescription) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const mode = urlParams.get('mode');
-
-        if (mode === 'topic') {
-            setupTitle.textContent = 'Practice by Skill';
-            setupDescription.textContent = 'Let\'s focus on a specific area. Fill out the details below to begin your practice session.';
-            topicForm.classList.remove('hidden');
-        } else if (mode === 'company') {
-            setupTitle.textContent = 'Prepare for a Company';
-            setupDescription.textContent = 'Get tailored questions for a specific company and role. Fill out the details to start.';
-            companyForm.classList.remove('hidden');
-        } else {
-            setupTitle.textContent = 'Invalid Setup';
-            setupDescription.innerHTML = 'Something went wrong. Please <a href="/" style="color: var(--primary-color);">return to the homepage</a> and select a practice mode.';
-        }
-        
-        // Add event listeners for form submission
-        topicForm.addEventListener('submit', handleFormSubmit);
-        companyForm.addEventListener('submit', handleFormSubmit);
+    // Check which page we're on and initialize accordingly
+    if (document.getElementById('skill-form')) {
+        initSkillSetupPage();
+    } else if (document.querySelector('.company-grid')) {
+        initCompanySetupPage();
     }
 });
 
-/**
- * NEW: Upgraded form submission handler
- * This function now shows a professional loading overlay, simulates
- * an async operation (like calling an AI backend), and then provides
- * feedback to the user.
- */
-function handleFormSubmit(event) {
-    event.preventDefault(); // Prevent the default form submission
+// --- INITIALIZATION FOR SKILL SETUP PAGE ---
+function initSkillSetupPage() {
+    const form = document.getElementById('skill-form');
+    const slider = document.getElementById('skill-questions');
+    const sliderValue = document.getElementById('skill-questions-value');
+    const topicInput = document.getElementById('topic');
     
-    // 1. Get the loading overlay and the form data
-    const loadingOverlay = document.getElementById('loading-overlay');
-    const form = event.target;
-    const formData = new FormData(form);
-    const data = Object.fromEntries(formData.entries());
+    // Setup slider
+    if (slider && sliderValue) {
+        sliderValue.textContent = slider.value;
+        slider.addEventListener('input', () => {
+            sliderValue.textContent = slider.value;
+        });
+    }
 
-    console.log('Starting practice session with the following configuration:');
-    console.log(data);
+    // Setup suggestion tags
+    const suggestionTags = document.querySelectorAll('.suggestion-tag');
+    if (suggestionTags.length && topicInput) {
+        suggestionTags.forEach(tag => {
+            tag.addEventListener('click', () => {
+                topicInput.value = tag.dataset.topic;
+            });
+        });
+    }
     
-    // 2. Show the full-page loading animation
-    if(loadingOverlay) {
+    // Handle form submission
+    if (form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(form);
+            const data = Object.fromEntries(formData.entries());
+            data.mode = 'topic'; // Add mode for the backend
+            startPracticeSession(data);
+        });
+    }
+}
+
+// --- INITIALIZATION FOR COMPANY SETUP PAGE ---
+function initCompanySetupPage() {
+    const companyCards = document.querySelectorAll('.company-card');
+    const detailForm = document.getElementById('company-detail-form');
+    const companyNameHiddenInput = document.getElementById('company-name-hidden');
+    const formTitle = document.getElementById('company-form-title');
+    const slider = document.getElementById('company-questions');
+    const sliderValue = document.getElementById('company-questions-value');
+
+    // Setup slider
+    if (slider && sliderValue) {
+        sliderValue.textContent = slider.value;
+        slider.addEventListener('input', () => {
+            sliderValue.textContent = slider.value;
+        });
+    }
+
+    // Handle company card clicks
+    companyCards.forEach(card => {
+        card.addEventListener('click', () => {
+            // Remove 'active' from all cards
+            companyCards.forEach(c => c.classList.remove('active'));
+            // Add 'active' to the clicked card
+            card.classList.add('active');
+            
+            const companyName = card.dataset.company;
+            if (companyName) {
+                companyNameHiddenInput.value = companyName;
+                formTitle.textContent = `Practice for ${companyName}`;
+                detailForm.classList.remove('hidden');
+            } else {
+                // This is the "Other" card
+                // We could show a text input for company name here
+                alert('"Other company" functionality will be added in a future version. Please select a company above.');
+            }
+        });
+    });
+
+    // Handle form submission
+    if (detailForm) {
+        detailForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = new FormData(detailForm);
+            const data = Object.fromEntries(formData.entries());
+            data.mode = 'company'; // Add mode for the backend
+            startPracticeSession(data);
+        });
+    }
+}
+
+// --- SHARED FUNCTIONALITY ---
+function startPracticeSession(configData) {
+    console.log('Starting practice session with configuration:', configData);
+    
+    // Show a loading overlay
+    const loadingOverlay = document.getElementById('loading-overlay');
+    if (loadingOverlay) {
         loadingOverlay.classList.remove('hidden');
     }
     
-    // 3. Simulate an API call to the backend.
-    // In a real application, you would use fetch() here to send `data`
-    // to your server and wait for a response.
+    // Simulate backend preparation
+    // In a real app, this would be a fetch() call to '/prepare_session'
     setTimeout(() => {
-        // 4. On "success" from the backend...
-
-        // For now, we'll just show an alert. In a real app, you would
-        // redirect to the actual interview page.
-        alert('Your AI-powered interview session is ready! The interview would start now. (This is a placeholder for V1)');
-
-        // Example of redirecting:
-        // window.location.href = '/interview?session_id=' + someSessionId;
-
-        // 5. Hide the loading animation
-        if(loadingOverlay) {
-            loadingOverlay.classList.add('hidden');
+        // Hide loading and show success
+    if (loadingOverlay) {
+        loadingOverlay.classList.add('hidden');
         }
         
-    }, 3500); // Simulate a 3.5-second processing time
+        const successNotification = document.getElementById('success-notification');
+        if (successNotification) {
+            successNotification.classList.remove('hidden');
+        }
+        
+        // Redirect to the interview page after a short delay
+    setTimeout(() => {
+            alert('Redirecting to the live interview page...');
+            // In a real app:
+            // window.location.href = `/interview?session_id=...`;
+        }, 1500);
+
+    }, 3000); // Simulate a 3-second preparation time
 }
