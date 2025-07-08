@@ -1,6 +1,6 @@
-// --- START OF MODIFIED FILE static/js/setup.js ---
+// --- START OF UPDATED FILE static/js/setup.js ---
 
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Determine which setup page we are on and initialize it.
     if (document.getElementById('skill-form')) {
         initSkillSetupPage();
@@ -23,24 +23,28 @@ function initSkillSetupPage() {
     let skills = [];
 
     function updateTagsUI() {
-        // Clear existing tags except for the input
+        // Clear existing tags
         tagContainer.querySelectorAll('.skill-tag').forEach(tag => tag.remove());
-        
+
         for (const skill of skills) {
             const tagElement = document.createElement('div');
             tagElement.classList.add('skill-tag');
             tagElement.textContent = skill;
+
             const removeBtn = document.createElement('button');
             removeBtn.type = 'button';
             removeBtn.classList.add('tag-remove-btn');
             removeBtn.innerHTML = '×';
+
             removeBtn.addEventListener('click', () => {
                 skills = skills.filter(s => s !== skill);
                 updateTagsUI();
             });
+
             tagElement.appendChild(removeBtn);
             tagContainer.insertBefore(tagElement, skillInput);
         }
+
         submitButton.disabled = skills.length === 0;
     }
 
@@ -58,14 +62,16 @@ function initSkillSetupPage() {
 
     if (slider && sliderValue) {
         sliderValue.textContent = slider.value;
-        slider.addEventListener('input', () => sliderValue.textContent = slider.value);
+        slider.addEventListener('input', () => {
+            sliderValue.textContent = slider.value;
+        });
     }
 
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         const formData = new FormData(form);
         const configData = Object.fromEntries(formData.entries());
-        configData.skills = skills; // Add the skills array
+        configData.skills = skills;
         startPracticeSession(configData);
     });
 }
@@ -84,23 +90,28 @@ function initCompanySetupPage() {
     companyCards.forEach(card => {
         card.addEventListener('click', () => {
             const companyName = card.dataset.company;
-            if (!companyName) { // The "Other" card
-                alert("Functionality to add 'Other' companies will be in a future version. Please select a provided company.");
+
+            // "Other" card logic (placeholder for now)
+            if (!companyName) {
+                alert("Adding a custom company will be supported soon. Please select an available company.");
                 return;
             }
 
             companyCards.forEach(c => c.classList.remove('active'));
             card.classList.add('active');
-            
+
             hiddenCompanyInput.value = companyName;
             formTitle.textContent = `Details for ${companyName}`;
             form.classList.remove('hidden');
+            form.scrollIntoView({ behavior: 'smooth', block: 'start' });
         });
     });
 
-     if (slider && sliderValue) {
+    if (slider && sliderValue) {
         sliderValue.textContent = slider.value;
-        slider.addEventListener('input', () => sliderValue.textContent = slider.value);
+        slider.addEventListener('input', () => {
+            sliderValue.textContent = slider.value;
+        });
     }
 
     form.addEventListener('submit', (e) => {
@@ -112,9 +123,7 @@ function initCompanySetupPage() {
 }
 
 /**
- * Generic function to start a session. It shows a loader, sends data to the backend,
- * stores the response, and redirects to the interview page.
- * @param {object} configData - The configuration for the interview session.
+ * Starts a practice session by calling the backend with configuration data.
  */
 async function startPracticeSession(configData) {
     const loadingOverlay = document.getElementById('loading-overlay');
@@ -133,20 +142,17 @@ async function startPracticeSession(configData) {
         }
 
         const result = await response.json();
-        
-        // CRITICAL FIX: Store session details for the interview page to use.
+
         localStorage.setItem('sessionDetails', JSON.stringify({
             sessionId: result.session_id,
             totalQuestions: parseInt(result.num_questions, 10)
         }));
 
-        // Redirect to the interview page
         window.location.href = `/interview/${result.session_id}`;
-
     } catch (error) {
         console.error('Error starting session:', error);
         if (loadingOverlay) loadingOverlay.classList.add('hidden');
         alert(`Error: ${error.message}`);
     }
 }
-// --- END OF MODIFIED FILE static/js/setup.js ---
+// --- END OF UPDATED FILE static/js/setup.js ---

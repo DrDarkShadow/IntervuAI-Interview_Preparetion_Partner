@@ -8,19 +8,21 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- Lucide Icons for modern iconography -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/lucide/0.263.0/lucide.min.css">
-    <!-- Custom stylesheet -->
+    <!-- Link to the external stylesheet -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
-    <!-- Animated background elements -->
+    <!-- Enhanced animated background elements -->
     <div class="bg-animation">
         <div class="floating-element floating-element-1"></div>
         <div class="floating-element floating-element-2"></div>
         <div class="floating-element floating-element-3"></div>
         <div class="floating-element floating-element-4"></div>
     </div>
+
+    <!-- Floating particles container -->
+    <div class="particles" id="particles"></div>
 
     <header class="app-header">
         <div class="header-content">
@@ -67,7 +69,7 @@
         </div>
     </footer>
 
-    <!-- Enhanced loading overlay -->
+    <!-- Enhanced loading overlay from the new design -->
     <div id="loading-overlay" class="loading-overlay hidden">
         <div class="loading-content">
             <div class="loading-spinner">
@@ -83,36 +85,12 @@
         </div>
     </div>
 
-    <!-- Success notification -->
-    <div id="success-notification" class="notification success-notification hidden">
-        <div class="notification-content">
-            <div class="notification-icon">
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-                    <polyline points="22,4 12,14.01 9,11.01"/>
-                </svg>
-            </div>
-            <div class="notification-text">
-                <h4>Session Ready!</h4>
-                <p>Your interview practice is about to begin.</p>
-            </div>
-        </div>
-    </div>
-
+    <!-- Link to the main javascript file for animations -->
+    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
     <script src="{{ url_for('static', filename='js/setup.js') }}"></script>
     <script src="{{ url_for('static', filename='js/interview.js') }}"></script>
-    <script>
-    function showLoadingOverlay() {
-        document.getElementById('loading-overlay').classList.remove('hidden');
-    }
-    function hideLoadingOverlay() {
-        document.getElementById('loading-overlay').classList.add('hidden');
-    }
-    // Example: show overlay on page load for 1.5s (remove this in production)
-    // window.addEventListener('DOMContentLoaded', function() {
-    //     showLoadingOverlay();
-    //     setTimeout(hideLoadingOverlay, 1500);
-    // });
-    </script>
+    
+    <!-- This block allows other pages to add their own specific scripts -->
+    {% block scripts %}{% endblock %}
 </body>
 </html>

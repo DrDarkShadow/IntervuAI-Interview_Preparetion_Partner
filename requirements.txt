@@ -1,0 +1,4 @@
+Flask>=2.0
+google-generativeai>=0.3
+azure-cognitiveservices-speech>=1.28
+python-dotenv
