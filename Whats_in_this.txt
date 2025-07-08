@@ -1,0 +1,1 @@
+we created a basic frontend in which practice based on skill is there and when we click on it, it open a page and fill the form to go forward
