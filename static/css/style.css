@@ -1496,3 +1496,263 @@ html {
     padding-top: var(--space-12);
     animation: fadeInUp 0.5s ease-out;
 }
+
+/* --- Add these new styles for the tag input --- */
+
+.tag-input-container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-2);
+    border: 2px solid var(--primary-200);
+    border-radius: var(--radius-lg);
+    background: white;
+    transition: all var(--transition-medium);
+}
+
+.tag-input-container:focus-within {
+    border-color: var(--accent-500);
+    box-shadow: 0 0 0 3px rgba(168, 85, 247, 0.1);
+}
+
+.skill-tag {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    background-color: var(--accent-100);
+    color: var(--accent-800);
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-md);
+    font-weight: var(--font-weight-medium);
+    font-size: var(--text-sm);
+}
+
+.tag-remove-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 16px;
+    height: 16px;
+    background: var(--accent-300);
+    color: var(--accent-900);
+    border: none;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    transition: all var(--transition-medium);
+}
+
+.tag-remove-btn:hover {
+    background: var(--accent-500);
+    color: white;
+    transform: rotate(90deg);
+}
+
+.tag-input {
+    flex-grow: 1;
+    border: none;
+    outline: none;
+    padding: var(--space-2);
+    font-size: var(--text-base);
+    min-width: 150px;
+    background: transparent;
+}
+
+/* --- New Styles for Live Interview Page --- */
+
+.interview-container {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: var(--space-8);
+    max-width: 1400px;
+    height: calc(100vh - 120px); /* Adjust based on header/footer height */
+    margin: 0 auto;
+    padding: var(--space-6);
+}
+
+.interview-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-8);
+}
+
+.progress-panel, .proctoring-panel {
+    background: white;
+    border-radius: var(--radius-xl);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-md);
+}
+
+.progress-panel h3, .proctoring-panel h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-semibold);
+    margin-bottom: var(--space-4);
+    color: var(--primary-800);
+}
+
+.progress-dots {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+}
+
+.progress-dot {
+    width: 20px;
+    height: 20px;
+    border-radius: var(--radius-full);
+    background-color: var(--primary-200);
+    transition: all var(--transition-medium);
+}
+
+.progress-dot.active {
+    background-color: var(--accent-500);
+    transform: scale(1.2);
+}
+
+.progress-dot.completed {
+    background-color: var(--success-500);
+}
+
+.webcam-container {
+    width: 100%;
+    aspect-ratio: 4 / 3;
+    background-color: var(--primary-900);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+    position: relative;
+}
+
+#webcam-video {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+#proctoring-status-overlay {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0, 0, 0, 0.6);
+    color: white;
+    padding: var(--space-2);
+    font-size: var(--text-xs);
+    text-align: center;
+}
+
+.interview-main {
+    display: flex;
+    flex-direction: column;
+    background: white;
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-lg);
+    overflow: hidden;
+}
+
+.question-display-area {
+    padding: var(--space-8);
+    border-bottom: 1px solid var(--primary-100);
+}
+
+#question-number {
+    font-size: var(--text-sm);
+    font-weight: var(--font-weight-semibold);
+    color: var(--accent-600);
+    margin-bottom: var(--space-2);
+}
+
+#current-question-text {
+    font-size: var(--text-2xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-900);
+    line-height: 1.4;
+}
+
+.chat-history-area {
+    flex-grow: 1;
+    padding: var(--space-6);
+    background-color: var(--primary-50);
+    overflow-y: auto;
+}
+
+.controls-area {
+    padding: var(--space-6);
+    border-top: 1px solid var(--primary-100);
+    text-align: center;
+}
+
+.status-message {
+    font-weight: var(--font-weight-medium);
+    color: var(--primary-600);
+    margin-bottom: var(--space-4);
+    min-height: 1.5em;
+}
+
+.timer {
+    font-size: var(--text-3xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--accent-700);
+    margin-bottom: var(--space-4);
+}
+
+.button-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: var(--space-4);
+}
+
+.control-button {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    padding: var(--space-4) var(--space-6);
+    border: none;
+    border-radius: var(--radius-full);
+    font-size: var(--text-base);
+    font-weight: var(--font-weight-semibold);
+    cursor: pointer;
+    transition: all var(--transition-medium);
+}
+
+.record-button {
+    background: var(--error-500);
+    color: white;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+
+.record-button:hover {
+    transform: scale(1.05);
+}
+
+.record-button.recording {
+    background: var(--primary-700); /* Darker blue when recording */
+    animation: pulse-red 1.5s infinite;
+}
+
+@keyframes pulse-red {
+    0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+    70% { box-shadow: 0 0 0 10px rgba(239, 68, 68, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+}
+
+.secondary-button {
+    background: var(--primary-100);
+    color: var(--primary-700);
+}
+
+.secondary-button:hover {
+    background: var(--primary-200);
+}
+
+.control-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Chat History Bubbles */
+.chat-history .message {
+    /* ... add styles for AI and user message bubbles ... */
+}

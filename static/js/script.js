@@ -1,128 +1,115 @@
 document.addEventListener('DOMContentLoaded', function() {
-    // Check which page we're on and initialize accordingly
-    if (document.getElementById('skill-form')) {
-        initSkillSetupPage();
-    } else if (document.querySelector('.company-grid')) {
-        initCompanySetupPage();
-    }
+    // This script now only needs to handle the skill setup page
+    initSkillSetupPage();
 });
 
-// --- INITIALIZATION FOR SKILL SETUP PAGE ---
 function initSkillSetupPage() {
     const form = document.getElementById('skill-form');
-    const slider = document.getElementById('skill-questions');
-    const sliderValue = document.getElementById('skill-questions-value');
-    const topicInput = document.getElementById('topic');
-    
-    // Setup slider
-    if (slider && sliderValue) {
-        sliderValue.textContent = slider.value;
-        slider.addEventListener('input', () => {
-            sliderValue.textContent = slider.value;
-        });
-    }
+    const skillInput = document.getElementById('skill-input');
+    const tagContainer = document.getElementById('tag-container');
+    const submitButton = form.querySelector('.submit-button');
+    let skills = [];
 
-    // Setup suggestion tags
-    const suggestionTags = document.querySelectorAll('.suggestion-tag');
-    if (suggestionTags.length && topicInput) {
-        suggestionTags.forEach(tag => {
-            tag.addEventListener('click', () => {
-                topicInput.value = tag.dataset.topic;
-            });
-        });
-    }
-    
-    // Handle form submission
-    if (form) {
-        form.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(form);
-            const data = Object.fromEntries(formData.entries());
-            data.mode = 'topic'; // Add mode for the backend
-            startPracticeSession(data);
-        });
-    }
-}
-
-// --- INITIALIZATION FOR COMPANY SETUP PAGE ---
-function initCompanySetupPage() {
-    const companyCards = document.querySelectorAll('.company-card');
-    const detailForm = document.getElementById('company-detail-form');
-    const companyNameHiddenInput = document.getElementById('company-name-hidden');
-    const formTitle = document.getElementById('company-form-title');
-    const slider = document.getElementById('company-questions');
-    const sliderValue = document.getElementById('company-questions-value');
-
-    // Setup slider
-    if (slider && sliderValue) {
-        sliderValue.textContent = slider.value;
-        slider.addEventListener('input', () => {
-            sliderValue.textContent = slider.value;
-        });
-    }
-
-    // Handle company card clicks
-    companyCards.forEach(card => {
-        card.addEventListener('click', () => {
-            // Remove 'active' from all cards
-            companyCards.forEach(c => c.classList.remove('active'));
-            // Add 'active' to the clicked card
-            card.classList.add('active');
+    // --- Tag Input Logic ---
+    function updateTagsUI() {
+        // Clear existing tags except for the input
+        tagContainer.querySelectorAll('.skill-tag').forEach(tag => tag.remove());
+        
+        // Add current skills back
+        for (const skill of skills) {
+            const tagElement = document.createElement('div');
+            tagElement.classList.add('skill-tag');
+            tagElement.textContent = skill;
             
-            const companyName = card.dataset.company;
-            if (companyName) {
-                companyNameHiddenInput.value = companyName;
-                formTitle.textContent = `Practice for ${companyName}`;
-                detailForm.classList.remove('hidden');
-            } else {
-                // This is the "Other" card
-                // We could show a text input for company name here
-                alert('"Other company" functionality will be added in a future version. Please select a company above.');
+            const removeBtn = document.createElement('button');
+            removeBtn.type = 'button'; // Prevent form submission
+            removeBtn.classList.add('tag-remove-btn');
+            removeBtn.innerHTML = '×';
+            removeBtn.addEventListener('click', (e) => {
+                e.stopPropagation(); // Stop click from propagating to the container
+                skills = skills.filter(s => s !== skill);
+                updateTagsUI();
+            });
+            
+            tagElement.appendChild(removeBtn);
+            tagContainer.insertBefore(tagElement, skillInput);
+        }
+        // Enable/disable submit button based on whether there are any skills
+        submitButton.disabled = skills.length === 0;
+    }
+
+    skillInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            const skill = skillInput.value.trim();
+            if (skill && !skills.includes(skill)) {
+                skills.push(skill);
+                skillInput.value = '';
+                updateTagsUI();
             }
-        });
+        }
     });
 
-    // Handle form submission
-    if (detailForm) {
-        detailForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const formData = new FormData(detailForm);
-            const data = Object.fromEntries(formData.entries());
-            data.mode = 'company'; // Add mode for the backend
-            startPracticeSession(data);
-        });
+    // --- Form Submission ---
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData.entries());
+        data.skills = skills; // Add our skills array to the form data
+        startPracticeSession(data);
+    });
+
+    // --- Sliders and Level Cards ---
+    const slider = document.getElementById('skill-questions');
+    const sliderValue = document.getElementById('skill-questions-value');
+    if (slider && sliderValue) {
+        sliderValue.textContent = slider.value;
+        slider.addEventListener('input', () => sliderValue.textContent = slider.value);
     }
+
+    document.querySelectorAll('.level-option').forEach(option => {
+        option.addEventListener('click', function() {
+            document.querySelectorAll('.level-option .level-card').forEach(card => card.classList.remove('active'));
+            this.querySelector('.level-card').classList.add('active');
+        });
+        // Set initial active state for checked radio
+        if (option.querySelector('input').checked) {
+             option.querySelector('.level-card').classList.add('active');
+        }
+    });
 }
 
-// --- SHARED FUNCTIONALITY ---
-function startPracticeSession(configData) {
-    console.log('Starting practice session with configuration:', configData);
-    
-    // Show a loading overlay
+async function startPracticeSession(configData) {
     const loadingOverlay = document.getElementById('loading-overlay');
-    if (loadingOverlay) {
-        loadingOverlay.classList.remove('hidden');
-    }
-    
-    // Simulate backend preparation
-    // In a real app, this would be a fetch() call to '/prepare_session'
-    setTimeout(() => {
-        // Hide loading and show success
-    if (loadingOverlay) {
-        loadingOverlay.classList.add('hidden');
-        }
-        
-        const successNotification = document.getElementById('success-notification');
-        if (successNotification) {
-            successNotification.classList.remove('hidden');
-        }
-        
-        // Redirect to the interview page after a short delay
-    setTimeout(() => {
-            alert('Redirecting to the live interview page...');
-            // In a real app:
-            // window.location.href = `/interview?session_id=...`;
-        }, 1500);
+    if(loadingOverlay) loadingOverlay.classList.remove('hidden');
 
-    }, 3000); // Simulate a 3-second preparation time
+    console.log('Starting practice session with configuration:', configData);
+
+    try {
+        const response = await fetch('/prepare_session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(configData)
+        });
+
+        if (!response.ok) {
+            const errorData = await response.json();
+            throw new Error(errorData.error || 'Failed to prepare session.');
+        }
+
+        const result = await response.json();
+        console.log('Session prepared:', result);
+
+        if(loadingOverlay) loadingOverlay.classList.add('hidden');
+        
+        alert(`V2 COMPLETE:\nSession created with ID: ${result.session_id}\n\nNext step is to build the page that uses this data.\nFirst Question: "${result.first_question.text}"\nAudio URL: ${result.first_question.audio_url}`);
+        
+        // In a real app, we would redirect:
+        // window.location.href = `/interview/${result.session_id}`;
+
+    } catch (error) {
+        console.error('Error starting session:', error);
+        if(loadingOverlay) loadingOverlay.classList.add('hidden');
+        alert(`Error: ${error.message}`);
+    }
 }

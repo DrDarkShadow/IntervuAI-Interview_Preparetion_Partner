@@ -13,54 +13,59 @@
 
     <!-- Header -->
     <div class="setup-header">
-        <h1 class="setup-title">Practice by Skill</h1>
-        <p class="setup-description">Sharpen your knowledge in a specific technical or behavioral area.</p>
+        <h1 class="setup-title">AI Interview Practice</h1>
+        <p class="setup-description">Sharpen your skills with a personalized practice session. Add the skills you want to focus on and let's begin!</p>
     </div>
 
     <!-- Skill Setup Form -->
     <form id="skill-form" class="setup-form">
         <div class="form-section">
-            <h3 class="form-section-title">Interview Focus</h3>
+            <h3 class="form-section-title">
+                <svg width="20" height="20" ...> <!-- Icon --> </svg>
+                Interview Focus
+            </h3>
+            
             <div class="form-group">
-                <label for="topic" class="form-label">What skill would you like to practice? <span class="required">*</span></label>
-                <div class="input-wrapper">
-                    <input type="text" id="topic" name="topic" placeholder="e.g., System Design, Python, SQL..." required class="form-input">
+                <label for="skill-input" class="form-label">
+                    What skills would you like to practice? (Press Enter to add a skill)
+                    <span class="required">*</span>
+                </label>
+                <!-- This is the new multi-tag input container -->
+                <div class="tag-input-container" id="tag-container">
+                    <input type="text" id="skill-input" placeholder="e.g., Python, System Design..." class="tag-input">
                 </div>
-                <div class="input-suggestions">
-                    <button type="button" class="suggestion-tag" data-topic="Algorithms">Algorithms</button>
-                    <button type="button" class="suggestion-tag" data-topic="System Design">System Design</button>
-                    <button type="button" class="suggestion-tag" data-topic="Behavioral Questions">Behavioral</button>
-                    <button type="button" class="suggestion-tag" data-topic="Python">Python</button>
-                </div>
+                 <small class="form-hint">Add at least one skill to start.</small>
             </div>
         </div>
 
-        <!-- Experience Level and Session Settings Sections (as you designed them) -->
         <div class="form-section">
-             <h3 class="form-section-title">Experience Level</h3>
-             <!-- Level options radio buttons here -->
-             <div class="level-options">
-                <label class="level-option"><input type="radio" name="level" value="entry" required><div class="level-card"><div class="level-icon">🌱</div><h4>Entry Level</h4><p>0-2 years</p></div></label>
+            <h3 class="form-section-title">
+                <svg width="20" height="20" ...> <!-- Icon --> </svg>
+                Experience Level
+            </h3>
+            <div class="level-options">
+                <label class="level-option"><input type="radio" name="level" value="entry" required checked><div class="level-card"><div class="level-icon">🌱</div><h4>Entry Level</h4><p>0-2 years</p></div></label>
                 <label class="level-option"><input type="radio" name="level" value="mid" required><div class="level-card"><div class="level-icon">🚀</div><h4>Mid Level</h4><p>2-5 years</p></div></label>
                 <label class="level-option"><input type="radio" name="level" value="senior" required><div class="level-card"><div class="level-icon">👑</div><h4>Senior Level</h4><p>5+ years</p></div></label>
             </div>
         </div>
         
         <div class="form-section">
-            <h3 class="form-section-title">Session Settings</h3>
-             <!-- Number of questions slider here -->
+            <h3 class="form-section-title">
+                 <svg width="20" height="20" ...> <!-- Icon --> </svg>
+                Session Settings
+            </h3>
             <div class="form-group">
                 <label for="skill-questions" class="form-label">Number of questions</label>
                 <div class="slider-wrapper">
                     <input type="range" id="skill-questions" name="num_questions" min="3" max="15" value="5" class="form-slider">
-                    <div class="slider-value"><span id="skill-questions-value">5</span> questions</div>
+                    <div class="slider-value"><span id="skill-questions-value">5</span></div>
                 </div>
             </div>
         </div>
 
-        <button type="submit" class="submit-button">
+        <button type="submit" class="submit-button" disabled>
             <span class="button-text">Start Practice Session</span>
-            <!-- icon -->
         </button>
     </form>
 </div>
