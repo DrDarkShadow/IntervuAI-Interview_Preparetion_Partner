@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="report-container">
+    <h1>Interview Report</h1>
+    
+    <div class="summary-card">
+        <h2>Session Summary</h2>
+        <p><strong>Topic:</strong> {{ session.config.topic }}</p>
+        <p><strong>Level:</strong> {{ session.config.level }}</p>
+        <p><strong>Questions Attempted:</strong> {{ answered }}/{{ session.questions|length }}</p>
+        <p><strong>Accuracy Score:</strong> {{ accuracy|round(1) }}%</p>
+    </div>
+    
+    <div class="feedback-section">
+        <h2>Feedback</h2>
+        <p>{{ feedback }}</p>
+    </div>
+    
+    <div class="question-breakdown">
+        <h2>Question Details</h2>
+        {% for question in session.questions %}
+        <div class="question-card">
+            <h3>Question {{ loop.index }}</h3>
+            <p>{{ question.text }}</p>
+            <div class="model-answer">
+                <h4>Model Answer:</h4>
+                <p>{{ question.answer }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %} 

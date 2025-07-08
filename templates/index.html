@@ -1,182 +1,59 @@
+<!-- --- START OF NEW FILE templates/index.html --- -->
+
 {% extends 'base.html' %}
 
 {% block content %}
-<!-- Hero Section with enhanced design -->
-<section class="hero-section">
-    <div class="hero-content">
-        <div class="hero-badge">
-            <span class="badge-text">AI-Powered Interview Practice</span>
-            <div class="badge-sparkle">✨</div>
-        </div>
-        <h1 class="hero-title">
-            Your perfect interview 
-            <span class="title-highlight">starts here</span>
-        </h1>
-        <p class="hero-description">
-            Master your next interview with AI-driven practice sessions, instant feedback, 
-            and personalized coaching that adapts to your skill level and target company.
-        </p>
-        <div class="hero-stats">
-            <div class="stat-item">
-                <span class="stat-number">10K+</span>
-                <span class="stat-label">Questions</span>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <span class="stat-number">95%</span>
-                <span class="stat-label">Success Rate</span>
-            </div>
-            <div class="stat-divider"></div>
-            <div class="stat-item">
-                <span class="stat-number">500+</span>
-                <span class="stat-label">Companies</span>
-            </div>
-        </div>
-    </div>
-    <div class="hero-visual">
-        <div class="visual-card card-1">
-            <div class="card-header">
-                <div class="card-dot"></div>
-                <div class="card-dot"></div>
-                <div class="card-dot"></div>
-            </div>
-            <div class="card-content">
-                <div class="typing-indicator">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </div>
-                <p>"Tell me about yourself..."</p>
-            </div>
-        </div>
-        <div class="visual-card card-2">
-            <div class="progress-ring">
-                <svg width="60" height="60">
-                    <circle cx="30" cy="30" r="25" fill="none" stroke="#e5e7eb" stroke-width="4"/>
-                    <circle cx="30" cy="30" r="25" fill="none" stroke="#667eea" stroke-width="4" 
-                            stroke-dasharray="157" stroke-dashoffset="39" stroke-linecap="round"/>
-                </svg>
-                <span class="progress-text">85%</span>
-            </div>
-            <p>Confidence Score</p>
-        </div>
-    </div>
-</section>
-
-<!-- Practice Options -->
-<section class="practice-section">
+<div class="practice-section">
     <div class="section-header">
-        <h2 class="section-title">Choose Your Practice Mode</h2>
-        <p class="section-subtitle">Select the approach that best fits your preparation needs</p>
+        <h2 class="section-title">How would you like to practice?</h2>
+        <p class="section-subtitle">Choose your path to interview success. Tailor your session by focusing on specific skills or preparing for a particular company.</p>
     </div>
 
     <div class="practice-grid">
-        <!-- Practice by Skill Card -->
-        <a href="{{ url_for('setup_page', mode='topic') }}" class="practice-card">
-            <div class="card-background">
-                <div class="card-pattern"></div>
-            </div>
+        <!-- Card for Skill-Based Practice -->
+        <a href="{{ url_for('setup_skill') }}" class="practice-card skill-card">
             <div class="card-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M9 12l2 2 4-4"/>
-                    <path d="M21 12c.552 0 1-.448 1-1V8c0-.552-.448-1-1-1h-3c-.552 0-1 .448-1 1v1H8V8c0-.552-.448-1-1-1H4c-.552 0-1 .448-1 1v3c0 .552.448 1 1 1h3c.552 0 1-.448 1-1v-1h8v1c0 .552.448 1 1 1h3z"/>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                    <path d="M2 17l10 5 10-5"></path>
+                    <path d="M2 12l10 5 10-5"></path>
                 </svg>
             </div>
             <div class="card-content">
                 <h3 class="card-title">Practice by Skill</h3>
-                <p class="card-description">
-                    Master specific technical areas like algorithms, system design, or programming languages
-                </p>
-                <div class="card-features">
-                    <span class="feature-tag">Technical Focus</span>
-                    <span class="feature-tag">Deep Dive</span>
-                </div>
+                <p class="card-description">Hone your expertise. Select the skills you want to be tested on, from algorithms to system design.</p>
             </div>
             <div class="card-arrow">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M7 17l10-10"/>
-                    <path d="M7 7h10v10"/>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
             </div>
         </a>
 
-        <!-- Prepare for a Company Card -->
-        <a href="{{ url_for('setup_page', mode='company') }}" class="practice-card">
-            <div class="card-background">
-                <div class="card-pattern"></div>
-            </div>
+        <!-- Card for Company-Based Practice -->
+        <a href="{{ url_for('setup_company') }}" class="practice-card company-card">
             <div class="card-icon">
-                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M3 21h18"/>
-                    <path d="M5 21V7l8-4v18"/>
-                    <path d="M19 21V11l-6-4"/>
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="21" width="18" height="0"></rect>
+                    <path d="M3 7v1a3 3 0 0 0 6 0V7a2 2 0 0 0-2-2H5a2 2 0 0 0-2 2z"></path>
+                    <path d="M21 7v1a3 3 0 0 0-6 0V7a2 2 0 0 0 2-2h2a2 2 0 0 0 2 2z"></path>
+                    <path d="M12 22V7a2 2 0 0 0-2-2H7a2 2 0 0 0-2 2v1"></path>
+                    <path d="M17 5.1a2 2 0 0 0-2-2h-1a2 2 0 0 0-2 2v1"></path>
                 </svg>
             </div>
             <div class="card-content">
                 <h3 class="card-title">Prepare for a Company</h3>
-                <p class="card-description">
-                    Get company-specific questions and insights for your target role and organization
-                </p>
-                <div class="card-features">
-                    <span class="feature-tag">Company Insights</span>
-                    <span class="feature-tag">Role Specific</span>
-                </div>
+                <p class="card-description">Get ready for a specific role. Practice with questions tailored to your target company's interview style.</p>
             </div>
             <div class="card-arrow">
-                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                    <path d="M7 17l10-10"/>
-                    <path d="M7 7h10v10"/>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
                 </svg>
             </div>
         </a>
     </div>
-</section>
-
-
-<!-- Features Section -->
-<section class="features-section">
-    <div class="section-header">
-        <h2 class="section-title">Why Choose Recon AI?</h2>
-        <p class="section-subtitle">Advanced AI technology meets personalized coaching</p>
-    </div>
-    
-    <div class="features-grid">
-        <div class="feature-item">
-            <div class="feature-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.46 9-11V7l-10-5z"/>
-                    <path d="M9 12l2 2 4-4"/>
-                </svg>
-            </div>
-            <h3>AI-Powered Feedback</h3>
-            <p>Get instant, detailed analysis of your responses with actionable improvement suggestions</p>
-        </div>
-        
-        <div class="feature-item">
-            <div class="feature-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.46 9-11V7l-10-5z"/>
-                    <path d="M9 12l2 2 4-4"/>
-                </svg>
-            </div>
-            <h3>Adaptive Learning</h3>
-            <p>Questions adapt to your skill level and progress, ensuring optimal challenge and growth</p>
-        </div>
-        
-        <div class="feature-item">
-            <div class="feature-icon">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                    <path d="M12 2L2 7v10c0 5.55 3.84 9.74 9 11 5.16-1.26 9-5.46 9-11V7l-10-5z"/>
-                    <path d="M9 12l2 2 4-4"/>
-                </svg>
-            </div>
-            <h3>Real Interview Scenarios</h3>
-            <p>Practice with authentic questions from top companies and real interview situations</p>
-        </div>
-    </div>
-</section>
+</div>
 {% endblock %}
+<!-- --- END OF NEW FILE templates/index.html --- -->

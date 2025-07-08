@@ -99,6 +99,20 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/setup.js') }}"></script>
+    <script src="{{ url_for('static', filename='js/interview.js') }}"></script>
+    <script>
+    function showLoadingOverlay() {
+        document.getElementById('loading-overlay').classList.remove('hidden');
+    }
+    function hideLoadingOverlay() {
+        document.getElementById('loading-overlay').classList.add('hidden');
+    }
+    // Example: show overlay on page load for 1.5s (remove this in production)
+    // window.addEventListener('DOMContentLoaded', function() {
+    //     showLoadingOverlay();
+    //     setTimeout(hideLoadingOverlay, 1500);
+    // });
+    </script>
 </body>
 </html>
