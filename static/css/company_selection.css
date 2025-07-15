@@ -1,0 +1,264 @@
+/* Company Selection Page: General Layout */
+.cs-page-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: var(--space-10) var(--space-6);
+    font-family: var(--font-family-sans);
+}
+
+.cs-header {
+    text-align: center;
+    margin-bottom: var(--space-10);
+}
+
+.cs-header h1 {
+    font-family: var(--font-family-display);
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-800);
+    margin-bottom: var(--space-3);
+}
+
+.cs-header p {
+    font-size: var(--text-lg);
+    color: var(--primary-600);
+}
+
+/* Search Bar */
+.cs-search-wrapper {
+    position: relative;
+    margin-bottom: var(--space-10);
+}
+
+.cs-search-bar {
+    width: 100%;
+    padding: var(--space-4) var(--space-5) var(--space-4) 50px; /* Left padding for icon */
+    font-size: var(--text-lg);
+    border-radius: var(--radius-full);
+    border: 2px solid var(--primary-200);
+    background-color: #fff;
+    transition: border-color var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+.cs-search-bar:focus {
+    outline: none;
+    border-color: var(--primary-500);
+    box-shadow: 0 0 0 4px rgba(var(--primary-500-rgb), 0.2);
+}
+
+.cs-search-icon {
+    position: absolute;
+    left: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--primary-400);
+    font-size: var(--text-lg);
+}
+
+/* Company Grid */
+.cs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: var(--space-6);
+}
+
+.cs-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: var(--space-6);
+    background-color: #fff;
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--primary-100);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-medium), box-shadow var(--transition-medium);
+    text-decoration: none;
+    color: inherit;
+}
+
+.cs-card:hover {
+    transform: translateY(-6px);
+    box-shadow: var(--shadow-xl);
+}
+
+.cs-logo-container {
+    height: 90px;
+    width: 90px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-4);
+    background-color: var(--primary-50);
+    border-radius: var(--radius-full);
+    transition: transform var(--transition-medium);
+}
+
+.cs-card:hover::before {
+    transform: scaleX(1);
+}
+
+.cs-card:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-2xl);
+    border-color: var(--primary-100);
+}
+
+/* Tier-specific styling */
+.cs-card--tier-giant {
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+}
+
+.cs-card--tier-giant:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #f1f5f9 100%);
+}
+
+.cs-card--tier-mid {
+    background: linear-gradient(135deg, #ffffff 0%, #fefce8 100%);
+}
+
+.cs-card--tier-mid:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #fef3c7 100%);
+}
+
+.cs-card--tier-emerging {
+    background: linear-gradient(135deg, #ffffff 0%, #f0f9ff 100%);
+}
+
+.cs-card--tier-emerging:hover {
+    background: linear-gradient(135deg, #ffffff 0%, #e0f2fe 100%);
+}
+
+/* Using unique class name .cs-logo-container */
+.cs-logo-container {
+    height: 80px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--space-6);
+    padding: var(--space-4);
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: var(--radius-xl);
+    border: 1px solid var(--primary-50);
+    box-sizing: border-box;
+    overflow: hidden;
+}
+
+.cs-logo-container img {
+    max-height: 45px;
+    max-width: 120px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    filter: grayscale(20%);
+    transition: filter var(--transition-medium);
+    display: block;
+}
+
+.cs-card:hover .cs-logo-container img {
+    filter: grayscale(0%);
+}
+
+.cs-info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.cs-info h3 {
+    font-family: var(--font-family-display);
+    font-size: var(--text-xl);
+    font-weight: var(--font-weight-semibold);
+    color: var(--primary-800);
+    margin-bottom: var(--space-3);
+    text-align: center;
+}
+
+.cs-info p {
+    color: var(--primary-600);
+    font-size: var(--text-sm);
+    line-height: 1.5;
+    margin-bottom: var(--space-4);
+    text-align: center;
+    flex: 1;
+}
+
+.cs-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+    justify-content: center;
+}
+
+.cs-tag {
+    background: var(--primary-50);
+    color: var(--primary-600);
+    padding: var(--space-1) var(--space-3);
+    border-radius: var(--radius-full);
+    font-size: var(--text-xs);
+    font-weight: var(--font-weight-medium);
+    border: 1px solid var(--primary-100);
+}
+
+.cs-card--tier-giant .cs-tag {
+    background: var(--primary-50);
+    color: var(--primary-700);
+}
+
+.cs-card--tier-mid .cs-tag {
+    background: var(--warning-50);
+    color: var(--warning-700);
+    border-color: var(--warning-100);
+}
+
+.cs-card--tier-emerging .cs-tag {
+    background: var(--info-50);
+    color: var(--info-700);
+    border-color: var(--info-100);
+}
+
+/* (Modal styles and other non-conflicting styles remain the same) */
+
+/* Dark mode support */
+@media (prefers-color-scheme: dark) {
+    .cs-card {
+        background: var(--primary-900);
+        border-color: var(--primary-700);
+    }
+    
+    .cs-card:hover {
+        background: var(--primary-800);
+        border-color: var(--primary-600);
+    }
+    
+    .cs-logo-container {
+        background: rgba(0, 0, 0, 0.3);
+        border-color: var(--primary-700);
+    }
+    
+    .cs-info h3 {
+        color: var(--primary-100);
+    }
+    
+    .cs-info p {
+        color: var(--primary-300);
+    }
+    
+    .cs-tag {
+        background: var(--primary-800);
+        color: var(--primary-200);
+        border-color: var(--primary-700);
+    }
+    /* ... (rest of dark mode styles) */
+}
+
+/* (Responsive styles also remain largely the same, just update the grid class if needed) */
+@media (max-width: 768px) {
+    .cs-grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: var(--space-4);
+    }
+    /* ... */
+}

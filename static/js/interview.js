@@ -8,11 +8,13 @@ document.addEventListener('DOMContentLoaded', function() {
         currentQuestionIndex: -1,
         totalQuestions: 0,
         isRecording: false,
+        isSkipping: false,
         mediaRecorder: null,
         audioChunks: [],
         timerInterval: null,
         userStream: null,
-        introductionPhase: 'waiting' // waiting, recon_intro, user_intro, questions
+        introductionPhase: 'waiting', // waiting, recon_intro, user_intro, questions
+        currentAudio: null // To manage audio playback
     };
 
     const ui = {
@@ -88,7 +90,6 @@ document.addEventListener('DOMContentLoaded', function() {
         console.log('[DEBUG] Starting introduction sequence...');
         
         try {
-            // Get session status to get introduction audios
             const response = await fetch(`/session_status/${state.sessionId}`);
             const sessionData = await response.json();
             
@@ -96,28 +97,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error('Introduction data not available');
             }
             
-            // Phase 1: Recon AI Introduction
             state.introductionPhase = 'recon_intro';
             ui.questionNumber.textContent = "Welcome";
             ui.questionText.textContent = "Welcome to Recon AI, your personal interview coach";
             updateStatus("Recon AI is introducing itself...");
             
-            console.log('[DEBUG] Playing Recon AI introduction:', sessionData.recon_intro_audio);
-            await playAudio(new Audio(sessionData.recon_intro_audio));
+            await playAudio(sessionData.recon_intro_audio);
             
-            // Phase 2: User Introduction Question
             state.introductionPhase = 'user_intro';
-            state.currentQuestionIndex = 0; // Introduction is question 0
+            state.currentQuestionIndex = 0;
             
             ui.questionNumber.textContent = "Introduction";
             ui.questionText.textContent = sessionData.intro_question.text;
             updateProgressDots('active');
             
             updateStatus("AI is asking the introduction question...");
-            console.log('[DEBUG] Playing user introduction question:', sessionData.intro_question.audio_url);
-            await playAudio(new Audio(sessionData.intro_question.audio_url));
+            await playAudio(sessionData.intro_question.audio_url);
             
-            // Start recording for user introduction
             state.introductionPhase = 'questions';
             startRecording();
             
@@ -131,8 +127,11 @@ document.addEventListener('DOMContentLoaded', function() {
     async function askNextQuestion() {
         console.log('[DEBUG] Asking next question...');
         
-        if (state.isRecording) stopRecording();
         if (state.timerInterval) clearInterval(state.timerInterval);
+
+        if (state.isSkipping) {
+            state.isSkipping = false;
+        }
 
         state.currentQuestionIndex++;
         setControlState('loading');
@@ -201,7 +200,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Play question audio
                 if (question.audio_url) {
                     updateStatus('AI is asking a question...');
-                    await playAudio(new Audio(question.audio_url));
+                    await playAudio(question.audio_url);
                 } else {
                     console.warn('[WARNING] No audio URL for question');
                     updateStatus('Question ready - audio not available');
@@ -244,8 +243,18 @@ document.addEventListener('DOMContentLoaded', function() {
         if (state.currentQuestionIndex >= state.totalQuestions) return;
         
         console.log('[DEBUG] Skipping question');
+        state.isSkipping = true;
+        if (state.currentAudio) {
+            state.currentAudio.pause();
+            state.currentAudio = null;
+        }
         updateProgressDots('skipped');
-        askNextQuestion();
+        
+        if (state.isRecording) {
+            stopRecording();
+        } else {
+            askNextQuestion();
+        }
     });
 
     ui.repeatBtn.addEventListener('click', async () => {
@@ -259,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             if (question.audio_url) {
                 updateStatus('Repeating the question...');
-                await playAudio(new Audio(question.audio_url));
+                await playAudio(question.audio_url);
                 startRecording();
             } else {
                 updateStatus('Audio not available for this question');
@@ -297,6 +306,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 console.log('[DEBUG] Recording stopped');
                 const audioBlob = new Blob(state.audioChunks, { type: 'audio/webm' });
                 state.isRecording = false;
+
+                if (state.isSkipping) {
+                    askNextQuestion();
+                    return;
+                }
                 
                 if (audioBlob.size > 1000) { // Minimum size check
                     console.log('[DEBUG] Valid recording, submitting...');
@@ -415,49 +429,51 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 3000);
     }
 
-    function playAudio(audioObject) {
+    function playAudio(audioSrc) {
         return new Promise((resolve) => {
-            console.log('[DEBUG] Playing audio...');
+            // Stop any currently playing audio
+            if (state.currentAudio) {
+                console.log('[DEBUG] Stopping previous audio');
+                state.currentAudio.pause();
+                state.currentAudio.src = ''; // Release resource
+                state.currentAudio = null;
+            }
+
+            console.log(`[DEBUG] Playing audio: ${audioSrc}`);
             setControlState('ai_speaking');
             
-            // Mute user microphone during AI speech
-            if (state.userStream) {
-                state.userStream.getAudioTracks().forEach(track => {
-                    track.enabled = false;
-                });
-            }
-            
-            audioObject.onended = () => {
-                console.log('[DEBUG] Audio playback ended');
-                // Re-enable user microphone
+            state.currentAudio = new Audio(audioSrc);
+
+            const audioObject = state.currentAudio;
+
+            const cleanupAndResolve = () => {
                 if (state.userStream) {
-                    state.userStream.getAudioTracks().forEach(track => {
-                        track.enabled = true;
-                    });
+                    state.userStream.getAudioTracks().forEach(track => { track.enabled = true; });
+                }
+                if (state.currentAudio === audioObject) {
+                    state.currentAudio = null;
                 }
                 resolve();
+            };
+
+            audioObject.onended = () => {
+                console.log('[DEBUG] Audio playback ended');
+                cleanupAndResolve();
             };
             
             audioObject.onerror = (error) => {
                 console.error('[ERROR] Audio playback error:', error);
-                // Re-enable user microphone
-                if (state.userStream) {
-                    state.userStream.getAudioTracks().forEach(track => {
-                        track.enabled = true;
-                    });
-                }
-                resolve();
+                cleanupAndResolve();
             };
+
+            // Mute user microphone during AI speech
+            if (state.userStream) {
+                state.userStream.getAudioTracks().forEach(track => { track.enabled = false; });
+            }
             
             audioObject.play().catch((error) => {
                 console.error('[ERROR] Failed to play audio:', error);
-                // Re-enable user microphone
-                if (state.userStream) {
-                    state.userStream.getAudioTracks().forEach(track => {
-                        track.enabled = true;
-                    });
-                }
-                resolve();
+                cleanupAndResolve();
             });
         });
     }
@@ -572,4 +588,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Initialize the interview
     init();
+
+    // Add an event listener to handle leaving the page
+    window.addEventListener('beforeunload', function(event) {
+        // Use navigator.sendBeacon to send a final request
+        if (state.sessionId) {
+            const formData = new FormData();
+            formData.append('session_id', state.sessionId);
+            navigator.sendBeacon(`/cancel_session/${state.sessionId}`, formData);
+        }
+    });
 });

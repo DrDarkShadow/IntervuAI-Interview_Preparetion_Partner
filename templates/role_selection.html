@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+
+{% block title %}Select a Role - {{ company_name }}{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/role_selection.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="rs-page-container">
+    <div class="rs-header">
+        <h1>Select Your Role at {{ company_name }}</h1>
+        <p>Choose a role to start your personalized interview preparation journey with targeted questions and insights.</p>
+    </div>
+
+    <div class="rs-grid">
+        {% for role in roles %}
+        <a href="{{ url_for('interview_preparation', company=company_name, role=role) }}" 
+           class="rs-card" 
+           data-role="{{ role.lower() }}"
+           aria-label="Select {{ role }} role for interview preparation">
+            <div class="rs-card-info">
+                <h3>
+                    {% if 'software' in role.lower() or 'developer' in role.lower() or 'engineer' in role.lower() %}
+                        <i class="fas fa-code rs-role-icon"></i>
+                    {% elif 'product' in role.lower() %}
+                        <i class="fas fa-cube rs-role-icon"></i>
+                    {% elif 'design' in role.lower() or 'ux' in role.lower() or 'ui' in role.lower() %}
+                        <i class="fas fa-palette rs-role-icon"></i>
+                    {% elif 'data' in role.lower() or 'analyst' in role.lower() %}
+                        <i class="fas fa-chart-bar rs-role-icon"></i>
+                    {% elif 'marketing' in role.lower() %}
+                        <i class="fas fa-bullhorn rs-role-icon"></i>
+                    {% elif 'sales' in role.lower() %}
+                        <i class="fas fa-handshake rs-role-icon"></i>
+                    {% elif 'manager' in role.lower() or 'lead' in role.lower() %}
+                        <i class="fas fa-users rs-role-icon"></i>
+                    {% elif 'security' in role.lower() %}
+                        <i class="fas fa-shield-alt rs-role-icon"></i>
+                    {% elif 'devops' in role.lower() %}
+                        <i class="fas fa-server rs-role-icon"></i>
+                    {% elif 'hr' in role.lower() or 'human' in role.lower() %}
+                        <i class="fas fa-user-friends rs-role-icon"></i>
+                    {% elif 'finance' in role.lower() %}
+                        <i class="fas fa-calculator rs-role-icon"></i>
+                    {% elif 'operations' in role.lower() %}
+                        <i class="fas fa-cogs rs-role-icon"></i>
+                    {% elif 'support' in role.lower() or 'customer' in role.lower() %}
+                        <i class="fas fa-headset rs-role-icon"></i>
+                    {% elif 'business' in role.lower() %}
+                        <i class="fas fa-briefcase rs-role-icon"></i>
+                    {% elif 'research' in role.lower() %}
+                        <i class="fas fa-microscope rs-role-icon"></i>
+                    {% elif 'quality' in role.lower() or 'qa' in role.lower() %}
+                        <i class="fas fa-check-circle rs-role-icon"></i>
+                    {% elif 'legal' in role.lower() %}
+                        <i class="fas fa-gavel rs-role-icon"></i>
+                    {% elif 'content' in role.lower() or 'writer' in role.lower() %}
+                        <i class="fas fa-pen rs-role-icon"></i>
+                    {% elif 'consultant' in role.lower() %}
+                        <i class="fas fa-handshake rs-role-icon"></i>
+                    {% elif 'intern' in role.lower() %}
+                        <i class="fas fa-graduation-cap rs-role-icon"></i>
+                    {% else %}
+                        <i class="fas fa-user-tie rs-role-icon"></i>
+                    {% endif %}
+                    {{ role }}
+                </h3>
+                <div class="rs-role-description">
+                    {% if 'software' in role.lower() or 'developer' in role.lower() %}
+                        Build and maintain software systems
+                    {% elif 'product' in role.lower() %}
+                        Define product strategy and roadmap
+                    {% elif 'design' in role.lower() %}
+                        Create user experiences and interfaces
+                    {% elif 'data' in role.lower() %}
+                        Analyze data to drive business decisions
+                    {% elif 'marketing' in role.lower() %}
+                        Promote products and drive growth
+                    {% elif 'sales' in role.lower() %}
+                        Drive revenue and customer acquisition
+                    {% elif 'manager' in role.lower() %}
+                        Lead teams and drive execution
+                    {% elif 'security' in role.lower() %}
+                        Protect systems and data
+                    {% elif 'devops' in role.lower() %}
+                        Build and maintain infrastructure
+                    {% elif 'hr' in role.lower() %}
+                        Manage talent and culture
+                    {% elif 'finance' in role.lower() %}
+                        Manage financial operations
+                    {% elif 'operations' in role.lower() %}
+                        Optimize business processes
+                    {% elif 'support' in role.lower() %}
+                        Help customers succeed
+                    {% elif 'business' in role.lower() %}
+                        Drive business strategy
+                    {% elif 'research' in role.lower() %}
+                        Conduct research and analysis
+                    {% elif 'quality' in role.lower() %}
+                        Ensure product quality
+                    {% elif 'legal' in role.lower() %}
+                        Provide legal guidance
+                    {% elif 'content' in role.lower() %}
+                        Create compelling content
+                    {% elif 'consultant' in role.lower() %}
+                        Provide expert advice
+                    {% elif 'intern' in role.lower() %}
+                        Learn and contribute to projects
+                    {% else %}
+                        Professional role at {{ company_name }}
+                    {% endif %}
+                </div>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+    
+    {% if not roles %}
+    <div class="rs-no-roles">
+        <div class="rs-no-roles-content">
+            <i class="fas fa-exclamation-triangle rs-no-roles-icon"></i>
+            <h2>No roles available</h2>
+            <p>We're currently updating our role database for {{ company_name }}. Please check back later.</p>
+            <a href="{{ url_for('company_selection') }}" class="rs-back-button">
+                <i class="fas fa-arrow-left"></i>
+                Choose Another Company
+            </a>
+        </div>
+    </div>
+    {% endif %}
+    
+    <div class="rs-navigation">
+        <a href="{{ url_for('company_selection') }}" class="rs-back-link">
+            <i class="fas fa-arrow-left"></i>
+            Back to Company Selection
+        </a>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const cards = document.querySelectorAll('.rs-card');
+    
+    // Add keyboard navigation
+    cards.forEach((card, index) => {
+        card.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                const nextCard = cards[index + 1];
+                if (nextCard) {
+                    nextCard.focus();
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                const prevCard = cards[index - 1];
+                if (prevCard) {
+                    prevCard.focus();
+                }
+            }
+        });
+    });
+    
+    // Add click analytics (if needed)
+    cards.forEach(card => {
+        card.addEventListener('click', function() {
+            const role = this.getAttribute('data-role');
+            const company = '{{ company_name }}';
+            
+            // Track role selection (integrate with your analytics)
+            if (typeof gtag !== 'undefined') {
+                gtag('event', 'role_selected', {
+                    'company': company,
+                    'role': role
+                });
+            }
+        });
+    });
+    
+    // Add smooth scroll for navigation
+    const backLink = document.querySelector('.rs-back-link');
+    if (backLink) {
+        backLink.addEventListener('click', function(e) {
+            // Add loading state if needed
+            this.style.opacity = '0.7';
+        });
+    }
+});
+</script>
+
+<style>
+/* Additional styles for enhanced role selection */
+.rs-role-icon {
+    margin-right: 0.5rem;
+    color: var(--primary-600);
+    transition: color var(--transition-medium);
+}
+
+.rs-card:hover .rs-role-icon {
+    color: var(--primary-700);
+}
+
+.rs-role-description {
+    font-size: var(--text-sm);
+    color: var(--primary-500);
+    margin-top: var(--space-2);
+    font-weight: var(--font-weight-normal);
+    opacity: 0.8;
+    transition: opacity var(--transition-medium);
+}
+
+.rs-card:hover .rs-role-description {
+    opacity: 1;
+    color: var(--primary-600);
+}
+
+.rs-no-roles {
+    text-align: center;
+    padding: var(--space-12);
+    background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+    border-radius: var(--radius-2xl);
+    border: 1px solid var(--primary-100);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-top: var(--space-8);
+}
+
+.rs-no-roles-icon {
+    font-size: 3rem;
+    color: var(--primary-400);
+    margin-bottom: var(--space-4);
+}
+
+.rs-no-roles h2 {
+    font-size: var(--text-2xl);
+    color: var(--primary-700);
+    margin-bottom: var(--space-3);
+}
+
+.rs-no-roles p {
+    color: var(--primary-500);
+    margin-bottom: var(--space-6);
+}
+
+.rs-back-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    padding: var(--space-3) var(--space-5);
+    background: var(--primary-600);
+    color: white;
+    text-decoration: none;
+    border-radius: var(--radius-lg);
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-medium);
+}
+
+.rs-back-button:hover {
+    background: var(--primary-700);
+    transform: translateY(-2px);
+}
+
+.rs-navigation {
+    margin-top: var(--space-10);
+    text-align: center;
+}
+
+.rs-back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--primary-600);
+    text-decoration: none;
+    font-weight: var(--font-weight-medium);
+    transition: all var(--transition-medium);
+    padding: var(--space-2) var(--space-4);
+    border-radius: var(--radius-lg);
+}
+
+.rs-back-link:hover {
+    color: var(--primary-700);
+    background: var(--primary-50);
+}
+
+@media (max-width: 768px) {
+    .rs-role-description {
+        font-size: var(--text-xs);
+    }
+}
+</style>
+{% endblock %}

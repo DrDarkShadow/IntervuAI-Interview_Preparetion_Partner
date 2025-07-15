@@ -22,6 +22,14 @@ function initSkillSetupPage() {
     const sliderValue = document.getElementById('skill-questions-value');
     let skills = [];
 
+    const urlParams = new URLSearchParams(window.location.search);
+    const skillFromURL = urlParams.get('skill');
+
+    if (skillFromURL) {
+        skills.push(skillFromURL);
+        updateTagsUI();
+    }
+
     function updateTagsUI() {
         // Clear existing tags
         tagContainer.querySelectorAll('.skill-tag').forEach(tag => tag.remove());

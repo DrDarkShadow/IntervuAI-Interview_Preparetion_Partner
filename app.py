@@ -6,7 +6,9 @@ import time
 import threading
 import traceback
 import random
-from azure.cognitiveservices.speech import SpeechConfig, SpeechSynthesizer, AudioConfig, ResultReason
+from azure.cognitiveservices.speech import (
+    SpeechConfig, SpeechSynthesizer, SpeechRecognizer, AudioConfig, ResultReason, CancellationReason
+)
 from azure.cognitiveservices.speech.audio import AudioOutputConfig
 from dotenv import load_dotenv
 import requests
@@ -131,17 +133,100 @@ def generate_tts_fallback(text, output_file):
         print(f"[ERROR] Exception in fallback TTS: {str(e)}")
         return False
 
-def get_gemini_response(prompt, max_tokens=500):
+def get_gemini_response(prompt, max_tokens=500, is_json=False):
     """
-    Get response from Gemini with error handling
+    Get response from Gemini with error handling and JSON parsing.
     """
     try:
-        response = gemini_model.generate_content(prompt)
-        return response.text
+        # For JSON output, add specific instructions to the prompt
+        if is_json:
+            full_prompt = f"{prompt}\n\nPlease provide the output in JSON format."
+        else:
+            full_prompt = prompt
+
+        response = gemini_model.generate_content(full_prompt)
+        
+        if is_json:
+            # Clean the response to extract the JSON part
+            text_response = response.text.strip()
+            json_str = text_response[text_response.find('{'):text_response.rfind('}')+1]
+            return json.loads(json_str)
+        else:
+            return response.text
+            
     except Exception as e:
         print(f"[ERROR] Gemini API call failed: {str(e)}")
         traceback.print_exc()
+        if is_json:
+            return {"error": "Failed to get a valid JSON response from the AI model."}
         return "I apologize, but I'm having trouble generating a response right now. Please try again."
+
+# --- SPEECH-TO-TEXT AND ANALYSIS ---
+def transcribe_audio_file(audio_path):
+    """
+    Transcribe audio file using Azure Speech-to-Text.
+    """
+    print(f"[DEBUG] Transcribing audio file: {audio_path}")
+    try:
+        # Azure Speech configuration
+        speech_config = SpeechConfig(subscription=speech_key, region=speech_region)
+        audio_config = AudioConfig(filename=audio_path)
+        
+        # Create a speech recognizer
+        recognizer = SpeechRecognizer(speech_config=speech_config, audio_config=audio_config)
+        
+        # Perform recognition
+        result = recognizer.recognize_once()
+        
+        # Process result
+        if result.reason == ResultReason.RecognizedSpeech:
+            print(f"[SUCCESS] Transcription successful: {result.text}")
+            return result.text
+        elif result.reason == ResultReason.NoMatch:
+            print("[WARNING] No speech could be recognized.")
+            return ""
+        elif result.reason == ResultReason.Canceled:
+            cancellation_details = result.cancellation_details
+            print(f"[ERROR] Speech Recognition canceled: {cancellation_details.reason}")
+            if cancellation_details.reason == CancellationReason.Error:
+                print(f"[ERROR] Error details: {cancellation_details.error_details}")
+            return None
+        
+    except Exception as e:
+        print(f"[ERROR] Exception in transcribe_audio_file: {str(e)}")
+        traceback.print_exc()
+        return None
+
+def analyze_answer_with_gemini(question, model_answer, user_answer):
+    """
+    Analyze user's answer against the model answer using Gemini and get structured feedback.
+    """
+    print("[DEBUG] Analyzing answer with Gemini...")
+    
+    prompt = f"""
+    As an expert interview coach, please analyze the following interview response.
+
+    **Interview Question:**
+    "{question}"
+
+    **A Model Answer:**
+    "{model_answer}"
+
+    **The User's Answer:**
+    "{user_answer}"
+
+    **Analysis Task:**
+    Provide a detailed analysis of the user's answer. I need a JSON object with the following structure:
+    - "relevance_score": An integer score from 0 to 100, rating how relevant the user's answer was to the question.
+    - "clarity_score": An integer score from 0 to 100, rating the clarity and conciseness of the answer.
+    - "confidence_score": An integer score from 0 to 100, estimating the user's confidence based on their response.
+    - "feedback": A string providing constructive feedback. Identify strengths and weaknesses.
+    - "suggestion": A string with specific, actionable advice on how to improve the answer.
+    """
+    
+    # Use the updated get_gemini_response to get a JSON object
+    analysis = get_gemini_response(prompt, max_tokens=800, is_json=True)
+    return analysis
 
 # --- INTRODUCTION AUDIO GENERATION ---
 def ensure_introduction_audios():
@@ -216,25 +301,34 @@ def prepare_remaining_questions(session_id, config):
             - Each question should be practical and relevant
             - Provide only the questions, numbered 1-{num_questions}
             - Each question on a new line
+            - Make questions conceptual and open ended 
+            - The goal is not to see how well the candidate can remember things but rather test their knowledge
             - Focus on problem-solving and practical application
+            - Try not to ask coding questions
             """
+
         elif 'company' in config and config['company']:
             company = config.get('company', '')
             role = config.get('role', 'Software Engineer')
             prompt = f"""Generate {num_questions} interview questions for a {role} position at {company}
             
             Requirements:
-            - Questions should reflect {company}'s culture and values
+            - Understand the buissness that the company does
+            - For eg uber is a ride sharing buissness
+            - Discord is primarily a messaging service
+            - Questions should reflect the companies buissness
             - Appropriate for {level} level candidates
-            - Mix of technical and behavioral questions
+            - Technial questions only 
             - Provide only the questions, numbered 1-{num_questions}
             - Each question on a new line
+            - For eg software engineer must be asked about system design or some optimization problem
             """
         else:
             prompt = f"""Generate {num_questions} general interview questions for a {level} level candidate
             
             Requirements:
-            - Mix of behavioral and problem-solving questions
+            - Technical open ended question to check knowledge and logic
+            - Avoid coding questions 
             - Questions should assess communication and thinking skills
             - Provide only the questions, numbered 1-{num_questions}
             - Each question on a new line
@@ -242,10 +336,16 @@ def prepare_remaining_questions(session_id, config):
         
         print(f"[DEBUG] Sending prompt to Gemini...")
         questions_response = get_gemini_response(prompt, max_tokens=800)
+        print("[DEBUG] questions_response : ", questions_response)
         questions_list = [q.strip() for q in questions_response.strip().split('\n') if q.strip()]
         
         # Generate questions with answers and audio
         for i, question_text in enumerate(questions_list[:num_questions], 1):
+            # Check if the session has been cancelled
+            if sessions.get(session_id, {}).get('status') == 'cancelled':
+                print(f"[DEBUG] Session {session_id} was cancelled. Halting question generation.")
+                return
+
             # Clean up question text (remove numbering if present)
             clean_question = question_text.split('. ', 1)[-1] if '. ' in question_text else question_text
             
@@ -354,15 +454,55 @@ def home():
     """Renders the main choice page."""
     return render_template('index.html')
 
-@app.route('/setup/skill')
+@app.route('/skill_selection')
+def skill_selection():
+    """Renders the skill selection page."""
+    return render_template('skill_selection.html')
+
+@app.route('/company_selection')
+def company_selection():
+    """Renders the company selection page."""
+    return render_template('company_selection.html')
+
+@app.route('/interview_preparation')
+def interview_preparation():
+    """Renders the interview preparation page for skills or companies."""
+    skill = request.args.get('skill')
+    company = request.args.get('company')
+    role = request.args.get('role')
+    return render_template('interview_preparation.html', skill=skill, company=company, role=role)
+
+@app.route('/setup_skill')
 def setup_skill():
     """Renders the skill-based setup page."""
-    return render_template('setup_skill.html')
+    skill = request.args.get('skill')
+    return render_template('setup_skill.html', skill=skill)
 
-@app.route('/setup/company')
-def setup_company():
-    """Renders the company-based setup page."""
-    return render_template('setup_company.html')
+# A dictionary to hold roles for each company
+COMPANY_ROLES = {
+    'Google': ['Software Engineer', 'Product Manager', 'Data Scientist', 'UX Designer', 'Site Reliability Engineer'],
+    'Amazon': ['Software Development Engineer', 'Cloud Support Associate', 'Solutions Architect', 'Data Engineer', 'Product Manager'],
+    'Microsoft': ['Software Engineer', 'Program Manager', 'Cloud Engineer', 'Security Analyst', 'Data Scientist'],
+    'Meta': ['Software Engineer', 'Data Scientist', 'Product Designer', 'Marketing Science', 'Product Manager'],
+    'Apple': ['Software Engineer', 'Hardware Engineer', 'Product Designer', 'Product Manager', 'Data Scientist'],
+    'Netflix': ['Software Engineer', 'Data Scientist', 'Product Manager', 'Content Strategist', 'Machine Learning Engineer'],
+    'Uber': ['Software Engineer', 'Data Scientist', 'Product Manager', 'Operations Manager', 'Machine Learning Engineer'],
+    'Airbnb': ['Software Engineer', 'Data Scientist', 'Product Manager', 'UX Designer', 'Trust & Safety Specialist'],
+    'Spotify': ['Software Engineer', 'Data Scientist', 'Product Manager', 'UX Designer', 'Content Strategist'],
+    'Slack': ['Software Engineer', 'Product Manager', 'UX Designer', 'Customer Success Manager', 'Developer Relations'],
+    'Dropbox': ['Software Engineer', 'Product Manager', 'UX Designer', 'Security Engineer', 'Data Scientist'],
+    'Stripe': ['Software Engineer', 'Product Manager', 'Data Scientist', 'Risk Analyst', 'Developer Relations'],
+    'Discord': ['Software Engineer', 'Product Manager', 'UX Designer', 'Community Manager', 'Data Scientist'],
+    'Figma': ['Software Engineer', 'Product Manager', 'Product Designer', 'Developer Relations', 'Customer Success Manager'],
+    'Notion': ['Software Engineer', 'Product Manager', 'UX Designer', 'Content Strategist', 'Customer Success Manager'],
+    'Canva': ['Software Engineer', 'Product Manager', 'UX Designer', 'Graphic Designer', 'Data Scientist']
+}
+
+@app.route('/setup_company/<company>')
+def setup_company(company):
+    """Renders the role selection page for a specific company."""
+    roles = COMPANY_ROLES.get(company, [])
+    return render_template('role_selection.html', company_name=company, roles=roles)
 
 @app.route('/prepare_session', methods=['POST'])
 def prepare_session():
@@ -453,9 +593,18 @@ def interview_session(session_id):
         return redirect(url_for('home'))
     return render_template('interview.html', session_id=session_id)
 
+@app.route('/cancel_session/<session_id>', methods=['POST'])
+def cancel_session(session_id):
+    """Cancels a session, stopping background tasks."""
+    if session_id in sessions:
+        sessions[session_id]['status'] = 'cancelled'
+        print(f"[DEBUG] Session {session_id} has been cancelled by the user.")
+        return jsonify({'status': 'cancelled'}), 200
+    return jsonify({'status': 'not_found'}), 404
+
 @app.route('/interview_session/<session_id>/submit_answer', methods=['POST'])
 def submit_answer(session_id):
-    """Handle user answer submission"""
+    """Handle user answer submission, transcription, and analysis."""
     try:
         if session_id not in sessions:
             return jsonify({'error': 'Invalid session ID'}), 404
@@ -463,71 +612,178 @@ def submit_answer(session_id):
         q_index = int(request.form.get('question_index'))
         audio_file = request.files.get('audio')
         
-        if audio_file:
-            filename = f"user_answer_{session_id}_q_{q_index}.webm"
-            filepath = os.path.join('static', 'user_answers', filename)
-            audio_file.save(filepath)
-            
-            if 'user_answers' not in sessions[session_id]:
-                sessions[session_id]['user_answers'] = {}
-            sessions[session_id]['user_answers'][q_index] = {'audio_path': filepath}
-            
-            print(f"[DEBUG] Saved user answer for question {q_index} in session {session_id}")
+        if not audio_file:
+            return jsonify({'error': 'No audio file provided'}), 400
+
+        # --- 1. Save Audio File ---
+        filename = f"user_answer_{session_id}_q_{q_index}.webm"
+        filepath = os.path.join('static', 'user_answers', filename)
+        audio_file.save(filepath)
+        print(f"[DEBUG] Saved user answer for question {q_index} at {filepath}")
+
+        # --- 2. Convert WebM to WAV for transcription ---
+        try:
+            wav_path = filepath.replace('.webm', '.wav')
+            audio = AudioSegment.from_file(filepath, format="webm")
+            audio.export(wav_path, format="wav")
+            print(f"[DEBUG] Converted {filepath} to {wav_path}")
+        except Exception as e:
+            print(f"[ERROR] Failed to convert WebM to WAV: {e}")
+            return jsonify({'error': 'Failed to process audio file.'}), 500
+
+        # --- 3. Transcribe Audio ---
+        transcribed_text = transcribe_audio_file(wav_path)
+        if transcribed_text is None:
+            return jsonify({'error': 'Failed to transcribe audio.'}), 500
+
+        # --- 4. Store Data and Start Analysis ---
+        session_data = sessions[session_id]
+        if 'user_answers' not in session_data:
+            session_data['user_answers'] = {}
         
-        return jsonify({'status': 'received'})
+        session_data['user_answers'][q_index] = {
+            'audio_path': filepath,
+            'transcript': transcribed_text,
+            'analysis_status': 'pending'
+        }
+
+        # --- 5. Run Analysis in Background ---
+        def run_analysis():
+            print(f"[DEBUG] Starting background analysis for Q{q_index}...")
+            try:
+                # Find the corresponding question and model answer
+                question_data = {}
+                if q_index == 0: # Introduction question
+                    question_data = session_data.get('intro_question', {})
+                    # For intro, model answer can be generic
+                    model_answer = "A good introduction should be concise, cover key experiences, and express enthusiasm for the role."
+                else:
+                    question_data = next((q for q in session_data['questions'] if q['index'] == q_index), None)
+                    model_answer = question_data.get('answer', 'No model answer available.')
+
+                if not question_data:
+                    print(f"[ERROR] Could not find question data for index {q_index}. Aborting analysis.")
+                    session_data['user_answers'][q_index]['analysis_status'] = 'failed'
+                    session_data['user_answers'][q_index]['analysis'] = {'error': 'Question data not found.'}
+                    return
+
+                # Get analysis from Gemini
+                analysis_result = analyze_answer_with_gemini(
+                    question_data['text'],
+                    model_answer,
+                    transcribed_text
+                )
+                
+                # Update session with analysis
+                session_data['user_answers'][q_index]['analysis'] = analysis_result
+                session_data['user_answers'][q_index]['analysis_status'] = 'complete'
+                print(f"[SUCCESS] Analysis complete for Q{q_index}")
+
+            except Exception as e:
+                print(f"[ERROR] Background analysis failed for Q{q_index}: {e}")
+                traceback.print_exc()
+                session_data['user_answers'][q_index]['analysis_status'] = 'failed'
+
+        threading.Thread(target=run_analysis, daemon=True).start()
+        
+        return jsonify({'status': 'received', 'transcript': transcribed_text})
         
     except Exception as e:
         print(f"[ERROR] Failed to submit answer: {str(e)}")
-        return jsonify({'error': str(e)}), 500
+        traceback.print_exc()
+        return jsonify({'error': 'An unexpected error occurred.'}), 500
 
 @app.route('/report/<session_id>')
 def generate_report(session_id):
-    """Generate evaluation report using Gemini"""
+    """Generate a detailed, interactive evaluation report."""
     try:
         if session_id not in sessions:
             return redirect(url_for('home'))
         
         session_data = sessions[session_id]
-        config = session_data['config']
         
-        total_questions = len(session_data.get('questions', []))
-        answered_count = len([k for k in session_data.get('user_answers', {}).keys() if k > 0])
+        # --- Wait for any pending analysis to complete ---
+        # In a real app, you might use a more robust system like Celery
+        # For this demo, a simple loop with a timeout is sufficient.
+        timeout = 30  # seconds
+        start_time = time.time()
+        while any(v.get('analysis_status') == 'pending' for v in session_data.get('user_answers', {}).values()):
+            if time.time() - start_time > timeout:
+                print("[WARNING] Report generation timed out waiting for analysis.")
+                break
+            time.sleep(1)
+
+        # --- Prepare data for the report ---
+        report_data = {
+            "config": session_data.get('config', {}),
+            "questions": []
+        }
         
-        # Create context for feedback
-        if 'skills' in config and config['skills']:
-            topic_str = f"the skills: {', '.join(config['skills'])}"
-        elif 'company' in config and config['company']:
-            topic_str = f"a {config.get('role', 'Software Engineer')} role at {config['company']}"
-        else:
-            topic_str = "general interview skills"
+        all_questions = [session_data.get('intro_question')] + session_data.get('questions', [])
         
-        # Generate feedback using Gemini
-        feedback_prompt = f"""Generate constructive interview feedback for a practice session on {topic_str}.
+        for q in all_questions:
+            try:
+                if not q: continue
+                q_index = q['index']
+                user_answer_data = session_data.get('user_answers', {}).get(q_index)
+
+                # If user did not answer this question, create a placeholder
+                if not user_answer_data:
+                    user_answer_data = {
+                        'transcript': 'Not answered',
+                        'analysis': {'error': 'This question was not answered.'},
+                        'audio_path': ''
+                    }
+                
+                # Get model answer
+                if q_index == 0:
+                    model_answer = "A good introduction is concise, covers key experiences, and shows enthusiasm."
+                else:
+                    model_answer = q.get('answer', 'No model answer available.')
+
+                report_data["questions"].append({
+                    "text": q.get('text', 'Question text not found.'),
+                    "index": q_index,
+                    "model_answer": model_answer,
+                    "user_transcript": user_answer_data.get('transcript', 'No answer recorded.'),
+                    "analysis": user_answer_data.get('analysis', {}),
+                    "audio_url": user_answer_data.get('audio_path', '').replace('static\\', '/static/')
+                })
+            except Exception as e:
+                print(f"[ERROR] Failed to process question {q.get('index', 'N/A')} for report: {e}")
+                # Optionally, add a placeholder to the report to indicate an error
+                report_data["questions"].append({
+                    "text": f"Error processing question.",
+                    "index": q.get('index', 'N/A'),
+                    "model_answer": "",
+                    "user_transcript": "",
+                    "analysis": {"error": "A server error occurred while processing this question."}
+                })
+            
+        # --- Calculate overall scores for charts ---
+        overall_scores = {
+            "relevance": 0,
+            "clarity": 0,
+            "confidence": 0
+        }
+        analyzed_count = 0
+        for q_data in report_data["questions"]:
+            analysis = q_data.get("analysis")
+            if analysis and "relevance_score" in analysis:
+                overall_scores["relevance"] += analysis.get("relevance_score", 0)
+                overall_scores["clarity"] += analysis.get("clarity_score", 0)
+                overall_scores["confidence"] += analysis.get("confidence_score", 0)
+                analyzed_count += 1
         
-        Session Details:
-        - Experience Level: {config.get('level', 'mid')}
-        - Questions Attempted: {answered_count} out of {total_questions}
-        - Session Type: {'Skills-based' if 'skills' in config else 'Company-based' if 'company' in config else 'General'}
-        
-        Please provide:
-        1. Overall performance assessment
-        2. Strengths observed
-        3. Areas for improvement
-        4. Specific recommendations
-        5. Encouraging closing remarks
-        
-        Keep the feedback constructive, specific, and motivating. Write in a professional but encouraging tone.
-        """
-        
-        feedback = get_gemini_response(feedback_prompt, max_tokens=600)
-        accuracy = (answered_count / total_questions) * 100 if total_questions > 0 else 0
-        
+        if analyzed_count > 0:
+            overall_scores["relevance"] = round(overall_scores["relevance"] / analyzed_count)
+            overall_scores["clarity"] = round(overall_scores["clarity"] / analyzed_count)
+            overall_scores["confidence"] = round(overall_scores["confidence"] / analyzed_count)
+
         return render_template('report.html', 
-            session=session_data,
-            accuracy=accuracy,
-            feedback=feedback,
-            answered=answered_count,
-            total_questions=total_questions
+            report_data=report_data,
+            overall_scores=overall_scores,
+            session_id=session_id
         )
         
     except Exception as e:
@@ -582,4 +838,5 @@ if __name__ == '__main__':
     schedule_cleanup()
     
     print("[DEBUG] Flask app starting on port 5000...")
-    app.run(debug=True, port=5000, threaded=True)
+    # Using 'watchdog' as the reloader type is more stable on Windows
+    app.run(debug=True, port=5000, threaded=True, reloader_type='watchdog')

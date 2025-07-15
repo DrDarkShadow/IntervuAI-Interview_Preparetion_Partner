@@ -1,0 +1,327 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="skill-selection-container">
+    <!-- Header -->
+    <div class="selection-header">
+        <h1 class="selection-title">Choose Your Interview Focus</h1>
+        <p class="selection-description">Select a skill category to start your personalized practice session</p>
+    </div>
+
+    <!-- Category Filter Tabs -->
+    <div class="category-tabs">
+        <div class="tab-item active" data-category="all">
+            <div class="tab-icon">🎯</div>
+            <span>All Skills</span>
+        </div>
+        <div class="tab-item" data-category="software">
+            <div class="tab-icon">💻</div>
+            <span>Software</span>
+        </div>
+        <div class="tab-item" data-category="data-science">
+            <div class="tab-icon">📊</div>
+            <span>Data Science</span>
+        </div>
+        <div class="tab-item" data-category="frontend">
+            <div class="tab-icon">🎨</div>
+            <span>Frontend</span>
+        </div>
+        <div class="tab-item" data-category="backend">
+            <div class="tab-icon">⚙️</div>
+            <span>Backend</span>
+        </div>
+        <div class="tab-item" data-category="cloud">
+            <div class="tab-icon">☁️</div>
+            <span>Cloud</span>
+        </div>
+        <div class="tab-item" data-category="mobile">
+            <div class="tab-icon">📱</div>
+            <span>Mobile</span>
+        </div>
+        <div class="tab-item" data-category="devops">
+            <div class="tab-icon">🔧</div>
+            <span>DevOps</span>
+        </div>
+    </div>
+
+    <!-- Skills Grid -->
+    <div class="skills-grid">
+        <!-- Software Engineering -->
+        <div class="skill-card" data-category="software" data-skill="Python Development">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">🐍</div>
+                </div>
+                <div class="skill-badge easy">Easy</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">Python Development</h3>
+                <p class="skill-subtitle">Master Python fundamentals and advanced concepts</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 15m</span>
+                    <span class="questions">📝 5-10 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="skill-card" data-category="software" data-skill="System Design">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">🏗️</div>
+                </div>
+                <div class="skill-badge hard">Hard</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">System Design</h3>
+                <p class="skill-subtitle">Design scalable distributed systems</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 25m</span>
+                    <span class="questions">📝 3-5 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="skill-card" data-category="software" data-skill="Data Structures & Algorithms">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">🔢</div>
+                </div>
+                <div class="skill-badge medium">Medium</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">Data Structures & Algorithms</h3>
+                <p class="skill-subtitle">Core CS concepts and problem solving</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 20m</span>
+                    <span class="questions">📝 8-12 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Frontend -->
+        <div class="skill-card" data-category="frontend" data-skill="JavaScript Fundamentals">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">🟨</div>
+                </div>
+                <div class="skill-badge easy">Easy</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">JavaScript Fundamentals</h3>
+                <p class="skill-subtitle">ES6+, DOM manipulation, and async programming</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 15m</span>
+                    <span class="questions">📝 6-8 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="skill-card" data-category="frontend" data-skill="React Development">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">⚛️</div>
+                </div>
+                <div class="skill-badge medium">Medium</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">React Development</h3>
+                <p class="skill-subtitle">Components, hooks, and state management</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 18m</span>
+                    <span class="questions">📝 7-10 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Data Science -->
+        <div class="skill-card" data-category="data-science" data-skill="Machine Learning">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">🤖</div>
+                </div>
+                <div class="skill-badge hard">Hard</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">Machine Learning</h3>
+                <p class="skill-subtitle">Algorithms, model evaluation, and deployment</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 25m</span>
+                    <span class="questions">📝 5-8 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="skill-card" data-category="data-science" data-skill="Statistics & Analytics">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">📈</div>
+                </div>
+                <div class="skill-badge medium">Medium</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">Statistics & Analytics</h3>
+                <p class="skill-subtitle">Statistical analysis and data interpretation</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 20m</span>
+                    <span class="questions">📝 6-9 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Backend -->
+        <div class="skill-card" data-category="backend" data-skill="Database Design">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">🗄️</div>
+                </div>
+                <div class="skill-badge medium">Medium</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">Database Design</h3>
+                <p class="skill-subtitle">SQL, NoSQL, and database optimization</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 18m</span>
+                    <span class="questions">📝 6-10 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="skill-card" data-category="backend" data-skill="API Development">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">🔌</div>
+                </div>
+                <div class="skill-badge easy">Easy</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">API Development</h3>
+                <p class="skill-subtitle">REST, GraphQL, and API best practices</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 15m</span>
+                    <span class="questions">📝 5-8 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Cloud -->
+        <div class="skill-card" data-category="cloud" data-skill="AWS Solutions">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">☁️</div>
+                </div>
+                <div class="skill-badge hard">Hard</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">AWS Solutions</h3>
+                <p class="skill-subtitle">Cloud architecture and AWS services</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 22m</span>
+                    <span class="questions">📝 4-7 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile -->
+        <div class="skill-card" data-category="mobile" data-skill="React Native">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">📱</div>
+                </div>
+                <div class="skill-badge medium">Medium</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">React Native</h3>
+                <p class="skill-subtitle">Cross-platform mobile development</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 18m</span>
+                    <span class="questions">📝 6-9 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- DevOps -->
+        <div class="skill-card" data-category="devops" data-skill="Docker & Kubernetes">
+            <div class="card-header">
+                <div class="skill-avatar">
+                    <div class="avatar-icon">🐳</div>
+                </div>
+                <div class="skill-badge hard">Hard</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">Docker & Kubernetes</h3>
+                <p class="skill-subtitle">Containerization and orchestration</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ 24m</span>
+                    <span class="questions">📝 5-8 questions</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Custom Dynamic Card -->
+        <div class="skill-card dynamic-card" data-category="all">
+            <div class="card-header">
+                <div class="skill-avatar dynamic">
+                    <div class="avatar-icon">✨</div>
+                </div>
+                <div class="skill-badge custom">Custom</div>
+            </div>
+            <div class="card-content">
+                <h3 class="skill-name">Custom Practice Session</h3>
+                <p class="skill-subtitle">Create your own personalized interview session</p>
+                <div class="skill-meta">
+                    <span class="duration">⏱️ Flexible</span>
+                    <span class="questions">📝 3-15 questions</span>
+                </div>
+            </div>
+            <div class="custom-indicator">
+                <span>Build Your Own</span>
+                <div class="arrow">→</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Category filtering functionality
+document.addEventListener('DOMContentLoaded', function() {
+    const tabs = document.querySelectorAll('.tab-item');
+    const cards = document.querySelectorAll('.skill-card');
+    
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function() {
+            const category = this.dataset.category;
+            
+            // Update active tab
+            tabs.forEach(t => t.classList.remove('active'));
+            this.classList.add('active');
+            
+            // Filter cards
+            cards.forEach(card => {
+                if (category === 'all' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                    card.classList.add('fade-in');
+                } else {
+                    card.style.display = 'none';
+                    card.classList.remove('fade-in');
+                }
+            });
+        });
+    });
+    
+    // Card click handlers
+    cards.forEach(card => {
+        card.addEventListener('click', function() {
+            const skill = this.dataset.skill;
+            
+            if (this.classList.contains('dynamic-card')) {
+                // Redirect to custom setup page
+                window.location.href = '/setup_skill';
+            } else {
+                // Redirect to interview preparation page
+                window.location.href = `/interview_preparation?skill=${encodeURIComponent(skill)}`;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

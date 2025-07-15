@@ -196,80 +196,84 @@
     </div>
 
     <div class="practice-grid">
-  <!-- Skill Practice Card -->
-  <a href="{{ url_for('setup_skill') }}" class="practice-card skill-card">
-    <div class="card-header-section">
-      <div class="card-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
-          <path d="M2 17l10 5 10-5"></path>
-          <path d="M2 12l10 5 10-5"></path>
-        </svg>
-      </div>
-      <div class="card-badge">Popular</div>
-    </div>
-    <div class="card-content">
-      <h3 class="card-title">Practice by Skill</h3>
-      <p class="card-description">
-        Hone your expertise on specific topics like algorithms, system design, behavioral questions, and technical problem-solving.
-      </p>
-      <div class="card-features">
-        <div class="feature-tag">Algorithms</div>
-        <div class="feature-tag">System Design</div>
-        <div class="feature-tag">Behavioral</div>
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="card-stats">
-        <span class="stat">500+ Questions</span>
-        <span class="stat">15 Categories</span>
-      </div>
-      <div class="card-arrow">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </div>
-    </div>
-  </a>
+        <!-- Skill Practice Card -->
+        <a href="{{ url_for('skill_selection') }}" class="practice-card skill-card">
+            <div class="card-header-section">
+                <div class="icon-badge-wrapper">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <div class="card-badge">Popular</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Practice by Skill</h3>
+                <p class="card-description">
+                    Hone your expertise on specific topics like algorithms, system design, behavioral questions, and technical problem-solving.
+                </p>
+                <div class="card-features">
+                    <div class="feature-tag">Algorithms</div>
+                    <div class="feature-tag">System Design</div>
+                    <div class="feature-tag">Behavioral</div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="card-stats">
+                    <span class="stat">500+ Questions</span>
+                    <span class="stat">15 Categories</span>
+                </div>
+                <div class="card-arrow">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </a>
 
-  <!-- Company Practice Card (Fixed) -->
-  <a href="{{ url_for('setup_company') }}" class="practice-card company-card">
-    <div class="card-header-section">
-      <div class="card-icon">
-        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
-          <path d="M3 9h18"></path>
-          <path d="M9 21V9"></path>
-        </svg>
-      </div>
-      <div class="card-badge">Targeted</div>
+        <!-- Company Practice Card -->
+        <a href="{{ url_for('company_selection') }}" class="practice-card company-card">
+            <div class="card-header-section">
+                <div class="icon-badge-wrapper">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <path d="M3 9h18"></path>
+                            <path d="M9 21V9"></path>
+                        </svg>
+                    </div>
+                    <div class="card-badge">Targeted</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Prepare for a Company</h3>
+                <p class="card-description">
+                    Get questions tailored to specific companies and roles. Practice with real interview formats and company-specific scenarios.
+                </p>
+                <div class="card-features">
+                    <div class="feature-tag">FAANG</div>
+                    <div class="feature-tag">Startups</div>
+                    <div class="feature-tag">Enterprise</div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="card-stats">
+                    <span class="stat">500+ Companies</span>
+                    <span class="stat">Real Formats</span>
+                </div>
+                <div class="card-arrow">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </a>
     </div>
-    <div class="card-content">
-      <h3 class="card-title">Prepare for a Company</h3>
-      <p class="card-description">
-        Get questions tailored to specific companies and roles. Practice with real interview formats and company-specific scenarios.
-      </p>
-      <div class="card-features">
-        <div class="feature-tag">FAANG</div>
-        <div class="feature-tag">Startups</div>
-        <div class="feature-tag">Enterprise</div>
-      </div>
-    </div>
-    <div class="card-footer">
-      <div class="card-stats">
-        <span class="stat">500+ Companies</span>
-        <span class="stat">Real Formats</span>
-      </div>
-      <div class="card-arrow">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-          <line x1="5" y1="12" x2="19" y2="12"></line>
-          <polyline points="12 5 19 12 12 19"></polyline>
-        </svg>
-      </div>
-    </div>
-  </a>
-</div>
 
 <!-- Quick Start Section -->
 <section class="quick-start-section animate-in">
@@ -279,8 +283,8 @@
             <p>Jump straight into your personalized AI-driven session or explore company-specific practice modes tailored for your goals.</p>
         </div>
         <div class="quick-start-actions">
-            <a href="{{ url_for('setup_skill') }}" class="quick-start-btn primary">Start Practicing</a>
-            <a href="{{ url_for('setup_company') }}" class="quick-start-btn secondary">
+            <a href="{{ url_for('skill_selection') }}" class="quick-start-btn primary">Start Practicing</a>
+            <a href="{{ url_for('company_selection') }}" class="quick-start-btn secondary">
                 Learn More
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                     <path d="M5 12h14M12 5l7 7-7 7"/>

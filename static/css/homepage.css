@@ -496,15 +496,15 @@
 }
 
 .practice-card {
-    background: white;
-    border-radius: var(--radius-xl);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+    border-radius: 12px;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
     padding: var(--space-6);
-    border: 1px solid var(--primary-200);
-    box-shadow: var(--shadow-lg);
-    text-decoration: none;
-    color: inherit;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
+    background: white;
+    transition: transform 0.2s ease;
 }
 
 .practice-card:hover {
@@ -514,9 +514,9 @@
 
 .card-header-section {
     display: flex;
-    justify-content: space-between;
     align-items: center;
-    margin-bottom: var(--space-4);
+    justify-content: space-between;
+    gap: var(--space-3); /* or 8px if --space-3 is undefined */
 }
 
 .card-icon {
@@ -568,7 +568,6 @@
 }
 
 .card-footer {
-    display: flex;
     justify-content: space-between;
     align-items: center;
     font-size: var(--text-sm);
@@ -758,4 +757,14 @@
     .quick-start-btn {
         width: 100%;
     }
+}
+
+.icon-badge-wrapper {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2, 8px);
+}
+
+.company-card .icon-badge-wrapper {
+    justify-content: flex-start;
 }
