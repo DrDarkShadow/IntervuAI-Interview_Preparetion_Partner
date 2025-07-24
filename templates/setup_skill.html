@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="setup-container">
+    <!-- Progress Indicator -->
+    <div class="setup-progress">
+        <div class="progress-step active"><div class="step-number">1</div><span class="step-label">Setup</span></div>
+        <div class="progress-line"></div>
+        <div class="progress-step"><div class="step-number">2</div><span class="step-label">Practice</span></div>
+        <div class="progress-line"></div>
+        <div class="progress-step"><div class="step-number">3</div><span class="step-label">Review</span></div>
+    </div>
+
+    <!-- Header -->
+    <div class="setup-header">
+        <h1 class="setup-title">AI Interview Practice</h1>
+        <p class="setup-description">Sharpen your skills with a personalized practice session. Add the skills you want to focus on and let's begin!</p>
+    </div>
+
+    <!-- Skill Setup Form -->
+    <form id="skill-form" class="setup-form">
+        <div class="form-section">
+            <h3 class="form-section-title">
+                <svg width="20" height="20" ...> <!-- Icon --> </svg>
+                Interview Focus
+            </h3>
+            
+            <div class="form-group">
+                <label for="skill-input" class="form-label">
+                    What skills would you like to practice? (Press Enter to add a skill)
+                    <span class="required">*</span>
+                </label>
+                <!-- This is the new multi-tag input container -->
+                <div class="tag-input-container" id="tag-container">
+                    <input type="text" id="skill-input" placeholder="e.g., Python, System Design..." class="tag-input">
+                </div>
+                 <small class="form-hint">Add at least one skill to start.</small>
+            </div>
+        </div>
+
+        <div class="form-section">
+            <h3 class="form-section-title">
+                <svg width="20" height="20" ...> <!-- Icon --> </svg>
+                Experience Level
+            </h3>
+            <div class="level-options">
+                <label class="level-option"><input type="radio" name="level" value="entry" required checked><div class="level-card"><div class="level-icon">🌱</div><h4>Entry Level</h4><p>0-2 years</p></div></label>
+                <label class="level-option"><input type="radio" name="level" value="mid" required><div class="level-card"><div class="level-icon">🚀</div><h4>Mid Level</h4><p>2-5 years</p></div></label>
+                <label class="level-option"><input type="radio" name="level" value="senior" required><div class="level-card"><div class="level-icon">👑</div><h4>Senior Level</h4><p>5+ years</p></div></label>
+            </div>
+        </div>
+        
+        <div class="form-section">
+            <h3 class="form-section-title">
+                 <svg width="20" height="20" ...> <!-- Icon --> </svg>
+                Session Settings
+            </h3>
+            <div class="form-group">
+                <label for="skill-questions" class="form-label">Number of questions</label>
+                <div class="slider-wrapper">
+                    <input type="range" id="skill-questions" name="num_questions" min="3" max="15" value="5" class="form-slider">
+                    <div class="slider-value"><span id="skill-questions-value">5</span></div>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit" class="submit-button" disabled>
+            <span class="button-text">Start Practice Session</span>
+        </button>
+    </form>
+</div>
+
+<script src="{{ url_for('static', filename='js/setup.js') }}"></script>
+{% endblock %}

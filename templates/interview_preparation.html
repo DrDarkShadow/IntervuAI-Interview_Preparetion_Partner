@@ -1,0 +1,269 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="interview-prep-container">
+    <div class="prep-header">
+        <div class="header-nav">
+            <button class="back-btn">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M19 12H5M12 19l-7-7 7-7"/>
+                </svg>
+                Back to Skills
+            </button>
+        </div>
+        <div class="interview-title-section">
+            <h1 class="interview-title" id="interview-title">Interview Preparation</h1>
+            <p class="interview-subtitle" id="interview-subtitle">Get ready for your upcoming interview.</p>
+        </div>
+    </div>
+
+    <div class="prep-content">
+        <div class="video-section">
+            <div class="video-container">
+                <video id="video-preview" autoplay muted playsinline></video>
+                <div class="video-placeholder">
+                    <div class="camera-icon">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M23 7l-7 5 7 5V7z"/>
+                            <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                        </svg>
+                    </div>
+                    <p class="video-text">Camera is off</p>
+                </div>
+            </div>
+            <div class="device-controls-compact">
+                <button id="mic-btn" class="control-btn"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="M12 14q-1.25 0-2.125-.875T9 11V5q0-1.25.875-2.125T12 2q1.25 0 2.125.875T15 5v6q0 1.25-.875 2.125T12 14m-1 7v-3.075q-2.6-.35-4.3-2.325T4 11H6q0 2.075 1.463 3.537T11 16v-5H9V5q0-.825.588-1.413T11 3h2q.825 0 1.413.588T15 5v6h-2v5q2.075 0 3.538-1.463T18 16h2q0 2.5-1.7 4.475t-4.3 2.45V21Z"/></svg></button>
+                <button id="cam-btn" class="control-btn"><svg width="20" height="20" viewBox="0 0 24 24"><path fill="currentColor" d="m17.315 15.315l-1.4-1.4l1.1-1.1l1.4 1.4q.275.275.275.688t-.275.712q-.3.3-.713.3t-.687-.3M20.7 19.3l-2-2H5q-.825 0-1.413-.588T3 15V7.8l-2-2l1.4-1.4L22.1 20.7zM5 13h8.2l-8-8H5z"/></svg></button>
+            </div>
+        </div>
+
+        <div class="preparation-panel">
+            <div class="panel-header">
+                <h2 class="panel-title">Ready for your AI interview?</h2>
+                <p class="panel-subtitle">This session is designed to help you practice and improve.</p>
+            </div>
+            
+            <div class="interview-details">
+                <div class="detail-item">
+                    <div class="detail-icon">⏱️</div>
+                    <div class="detail-text">
+                        <strong>Duration:</strong> <span id="duration">~15 minutes</span>
+                    </div>
+                </div>
+                <div class="detail-item">
+                    <div class="detail-icon">📝</div>
+                    <div class="detail-text">
+                        <strong>Questions:</strong> <span id="questions">5-10 questions</span>
+                    </div>
+                </div>
+                 <div class="detail-item">
+                    <div class="detail-icon">⭐</div>
+                    <div class="detail-text">
+                        <strong>Difficulty:</strong> <span id="difficulty">Medium</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="start-interview-btn" id="start-btn">
+                    <span class="btn-text">Start Interview</span>
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polygon points="5,3 19,12 5,21"/>
+                    </svg>
+                </button>
+            </div>
+            
+            <div class="ai-notice">
+                <p class="ai-text">This interview will be conducted by Recon AI to provide you with feedback.</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelector('.back-btn').addEventListener('click', function() {
+        window.location.href = "{{ url_for('skill_selection') }}";
+    });
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const skill = urlParams.get('skill');
+
+    let skillData = {
+        title: 'General Interview',
+        subtitle: 'A general practice session.',
+        duration: '15m',
+        questions: '5-10 questions',
+        difficulty: 'Medium'
+    };
+
+    const allSkillsData = {
+        'Python Development': {
+            title: 'Python Development Interview',
+            subtitle: 'Master Python fundamentals and advanced concepts',
+            duration: '15m',
+            questions: '5-10 questions',
+            difficulty: 'Easy'
+        },
+        'System Design': {
+            title: 'System Design Interview',
+            subtitle: 'Design scalable distributed systems',
+            duration: '25m',
+            questions: '3-5 questions',
+            difficulty: 'Hard'
+        },
+        'Data Structures & Algorithms': {
+            title: 'Data Structures & Algorithms Interview',
+            subtitle: 'Core CS concepts and problem solving',
+            duration: '20m',
+            questions: '8-12 questions',
+            difficulty: 'Medium'
+        },
+        'JavaScript Fundamentals': {
+            title: 'JavaScript Fundamentals Interview',
+            subtitle: 'ES6+, DOM manipulation, and async programming',
+            duration: '15m',
+            questions: '6-8 questions',
+            difficulty: 'Easy'
+        },
+        'React Development': {
+            title: 'React Development Interview',
+            subtitle: 'Components, hooks, and state management',
+            duration: '18m',
+            questions: '7-10 questions',
+            difficulty: 'Medium'
+        },
+        'Machine Learning': {
+            title: 'Machine Learning Interview',
+            subtitle: 'Algorithms, model evaluation, and deployment',
+            duration: '25m',
+            questions: '5-8 questions',
+            difficulty: 'Hard'
+        },
+        'Statistics & Analytics': {
+            title: 'Statistics & Analytics Interview',
+            subtitle: 'Statistical analysis and data interpretation',
+            duration: '20m',
+            questions: '6-9 questions',
+            difficulty: 'Medium'
+        },
+        'Database Design': {
+            title: 'Database Design Interview',
+            subtitle: 'SQL, NoSQL, and database optimization',
+            duration: '18m',
+            questions: '6-10 questions',
+            difficulty: 'Medium'
+        },
+        'API Development': {
+            title: 'API Development Interview',
+            subtitle: 'REST, GraphQL, and API best practices',
+            duration: '15m',
+            questions: '5-8 questions',
+            difficulty: 'Easy'
+        },
+        'AWS Solutions': {
+            title: 'AWS Solutions Interview',
+            subtitle: 'Cloud architecture and AWS services',
+            duration: '22m',
+            questions: '4-7 questions',
+            difficulty: 'Hard'
+        },
+        'React Native': {
+            title: 'React Native Interview',
+            subtitle: 'Cross-platform mobile development',
+            duration: '18m',
+            questions: '6-9 questions',
+            difficulty: 'Medium'
+        },
+        'Docker & Kubernetes': {
+            title: 'Docker & Kubernetes Interview',
+            subtitle: 'Containerization and orchestration',
+            duration: '24m',
+            questions: '5-8 questions',
+            difficulty: 'Hard'
+        }
+    };
+
+    if (skill && allSkillsData[skill]) {
+        skillData = allSkillsData[skill];
+    }
+
+    document.getElementById('interview-title').textContent = skillData.title;
+    document.getElementById('interview-subtitle').textContent = skillData.subtitle;
+    document.getElementById('duration').textContent = skillData.duration;
+    document.getElementById('questions').textContent = skillData.questions;
+    document.getElementById('difficulty').textContent = skillData.difficulty;
+
+    const startBtn = document.getElementById('start-btn');
+    startBtn.addEventListener('click', function() {
+        this.disabled = true;
+        this.innerHTML = `<div class="loader"></div><span class="btn-text">Preparing...</span>`;
+
+        const numQuestions = parseInt(skillData.questions.split('-')[0]);
+
+        const config = {
+            skills: [skill],
+            level: skillData.difficulty.toLowerCase(),
+            num_questions: numQuestions
+        };
+
+        fetch('/prepare_session', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(config)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.session_id) {
+                const sessionDetails = {
+                    sessionId: data.session_id,
+                    totalQuestions: numQuestions + 1 // +1 for the intro question
+                };
+                localStorage.setItem('sessionDetails', JSON.stringify(sessionDetails));
+                window.location.href = `/interview/${data.session_id}`;
+            } else {
+                alert('Error preparing session. Please try again.');
+                startBtn.disabled = false;
+                startBtn.innerHTML = '<span class="btn-text">Start Interview</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>';
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred. Please check the console and try again.');
+            startBtn.disabled = false;
+            startBtn.innerHTML = '<span class="btn-text">Start Interview</span><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="5,3 19,12 5,21"/></svg>';
+        });
+    });
+
+    const videoPreview = document.getElementById('video-preview');
+    const camBtn = document.getElementById('cam-btn');
+    let stream;
+
+    async function setupCamera() {
+        try {
+            stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
+            videoPreview.srcObject = stream;
+            videoPreview.style.display = 'block';
+            document.querySelector('.video-placeholder').style.display = 'none';
+        } catch (err) {
+            console.error("Error accessing media devices.", err);
+            document.querySelector('.video-placeholder p').textContent = 'Camera/Mic access denied.';
+        }
+    }
+
+    camBtn.addEventListener('click', () => {
+        if (stream) {
+            stream.getTracks().forEach(track => track.stop());
+            videoPreview.srcObject = null;
+            stream = null;
+            videoPreview.style.display = 'none';
+            document.querySelector('.video-placeholder').style.display = 'flex';
+        } else {
+            setupCamera();
+        }
+    });
+
+    setupCamera();
+});
+</script>
+{% endblock %}

@@ -1,0 +1,66 @@
+/* Role Selection Page: General Layout */
+.rs-page-container {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: var(--space-10) var(--space-6);
+    font-family: var(--font-family-sans);
+}
+
+.rs-header {
+    text-align: center;
+    margin-bottom: var(--space-10);
+}
+
+.rs-header h1 {
+    font-family: var(--font-family-display);
+    font-size: var(--text-4xl);
+    font-weight: var(--font-weight-bold);
+    color: var(--primary-800);
+    margin-bottom: var(--space-3);
+}
+
+.rs-header p {
+    font-size: var(--text-lg);
+    color: var(--primary-600);
+}
+
+/* Role Grid */
+.rs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-5);
+}
+
+.rs-card {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    padding: var(--space-6);
+    background-color: #fff;
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--primary-100);
+    box-shadow: var(--shadow-sm);
+    transition: transform var(--transition-medium), box-shadow var(--transition-medium), border-color var(--transition-medium);
+    text-decoration: none;
+    color: inherit;
+}
+
+.rs-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--primary-300);
+}
+
+.rs-card-info h3 {
+    font-size: var(--text-lg);
+    font-weight: var(--font-weight-medium);
+    color: var(--primary-700);
+}
+
+/* Responsive Design */
+@media (max-width: 600px) {
+    .rs-grid {
+        grid-template-columns: 1fr;
+    }
+}

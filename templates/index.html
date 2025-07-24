@@ -1,0 +1,339 @@
+{% extends 'base.html' %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/homepage.css') }}">
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section with enhanced structure -->
+<section class="hero-section">
+    <div class="hero-content">
+        <div class="hero-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+            </svg>
+            <span>AI-Powered Interview Coach</span>
+        </div>
+        <h1 class="hero-title">
+            Practice with <span class="title-highlight">Purpose</span>,<br>
+            Interview with <span class="title-highlight">Confidence</span>.
+        </h1>
+        <p class="hero-description">
+            Recon AI is your personal interview coach. Master your skills with hyper-realistic practice sessions, 
+            complete with AI-generated questions and real-time performance feedback.
+        </p>
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-number">10K+</div>
+                <div class="stat-label">Practice Sessions</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">95%</div>
+                <div class="stat-label">Success Rate</div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-number">500+</div>
+                <div class="stat-label">Companies</div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="hero-visual">
+        <!-- Enhanced AI Interviewer Card -->
+        <div class="visual-card card-1">
+            <div class="card-header">
+                <div class="card-dots">
+                    <div class="card-dot red"></div>
+                    <div class="card-dot yellow"></div>
+                    <div class="card-dot green"></div>
+                </div>
+                <div class="card-title-bar">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                    </svg>
+                    <span>AI Interviewer</span>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="interviewer-avatar">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                        <circle cx="12" cy="7" r="4"/>
+                    </svg>
+                </div>
+                <div class="message-bubble">
+                    <div class="typing-indicator">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <p class="message-text">"Tell me about a time you handled a complex technical challenge..."</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Enhanced Performance Card -->
+        <div class="visual-card card-2">
+            <div class="performance-header">
+                <h4>Performance Analytics</h4>
+                <div class="live-indicator">
+                    <div class="pulse-dot"></div>
+                    <span>Live</span>
+                </div>
+            </div>
+            <div class="performance-content">
+                <div class="score-circle">
+                    <svg width="100" height="100" viewBox="0 0 100 100">
+                        <defs>
+                            <linearGradient id="scoreGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                <stop offset="0%" style="stop-color:#667eea"/>
+                                <stop offset="100%" style="stop-color:#764ba2"/>
+                            </linearGradient>
+                        </defs>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="#e2e8f0" stroke-width="8"/>
+                        <circle cx="50" cy="50" r="45" fill="none" stroke="url(#scoreGradient)" stroke-width="8" 
+                                stroke-linecap="round" stroke-dasharray="283" stroke-dashoffset="45" 
+                                class="animated-circle"/>
+                    </svg>
+                    <div class="score-text">
+                        <div class="score-number">85</div>
+                        <div class="score-label">Score</div>
+                    </div>
+                </div>
+                <div class="performance-metrics">
+                    <div class="metric">
+                        <span class="metric-label">Fluency</span>
+                        <div class="metric-bar">
+                            <div class="metric-fill" style="width: 90%;"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Clarity</span>
+                        <div class="metric-bar">
+                            <div class="metric-fill" style="width: 85%;"></div>
+                        </div>
+                    </div>
+                    <div class="metric">
+                        <span class="metric-label">Confidence</span>
+                        <div class="metric-bar">
+                            <div class="metric-fill" style="width: 78%;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Floating Achievement Badge -->
+        <div class="achievement-badge">
+            <div class="badge-icon">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
+                </svg>
+            </div>
+            <div class="badge-text">
+                <div class="badge-title">Streak Master</div>
+                <div class="badge-desc">7 days</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="features-section">
+    <div class="features-container">
+        <div class="feature-item">
+            <div class="feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M9 12l2 2 4-4"/>
+                    <path d="M21 12c-1 0-3-1-3-3s2-3 3-3 3 1 3 3-2 3-3 3"/>
+                    <path d="M3 12c1 0 3-1 3-3s-2-3-3-3-3 1-3 3 2 3 3 3"/>
+                    <path d="M3 12c0 6 6 9 9 9s9-3 9-9"/>
+                </svg>
+            </div>
+            <div class="feature-text">Real-time AI Feedback</div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M12 2v20M2 12h20"/>
+                </svg>
+            </div>
+            <div class="feature-text">Personalized Questions</div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M18 20V10M12 20V4M6 20v-6"/>
+                </svg>
+            </div>
+            <div class="feature-text">Performance Analytics</div>
+        </div>
+        <div class="feature-item">
+            <div class="feature-icon">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                    <circle cx="9" cy="7" r="4"/>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+            </div>
+            <div class="feature-text">Company-Specific Prep</div>
+        </div>
+    </div>
+</section>
+
+<!-- Practice Section with enhanced structure -->
+<section class="practice-section">
+    <div class="section-header">
+        <div class="section-badge">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            </svg>
+            <span>Get Started</span>
+        </div>
+        <h2 class="section-title">How would you like to practice?</h2>
+        <p class="section-subtitle">
+            Choose your path to interview success. Tailor your session by focusing on specific skills 
+            or preparing for a particular company's interview style.
+        </p>
+    </div>
+
+    <div class="practice-grid">
+        <!-- Skill Practice Card -->
+        <a href="{{ url_for('skill_selection') }}" class="practice-card skill-card">
+            <div class="card-header-section">
+                <div class="icon-badge-wrapper">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                    </div>
+                    <div class="card-badge">Popular</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Practice by Skill</h3>
+                <p class="card-description">
+                    Hone your expertise on specific topics like algorithms, system design, behavioral questions, and technical problem-solving.
+                </p>
+                <div class="card-features">
+                    <div class="feature-tag">Algorithms</div>
+                    <div class="feature-tag">System Design</div>
+                    <div class="feature-tag">Behavioral</div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="card-stats">
+                    <span class="stat">500+ Questions</span>
+                    <span class="stat">15 Categories</span>
+                </div>
+                <div class="card-arrow">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </a>
+
+        <!-- Company Practice Card -->
+        <a href="{{ url_for('company_selection') }}" class="practice-card company-card">
+            <div class="card-header-section">
+                <div class="icon-badge-wrapper">
+                    <div class="card-icon">
+                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                            <path d="M3 9h18"></path>
+                            <path d="M9 21V9"></path>
+                        </svg>
+                    </div>
+                    <div class="card-badge">Targeted</div>
+                </div>
+            </div>
+            <div class="card-content">
+                <h3 class="card-title">Prepare for a Company</h3>
+                <p class="card-description">
+                    Get questions tailored to specific companies and roles. Practice with real interview formats and company-specific scenarios.
+                </p>
+                <div class="card-features">
+                    <div class="feature-tag">FAANG</div>
+                    <div class="feature-tag">Startups</div>
+                    <div class="feature-tag">Enterprise</div>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="card-stats">
+                    <span class="stat">500+ Companies</span>
+                    <span class="stat">Real Formats</span>
+                </div>
+                <div class="card-arrow">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg>
+                </div>
+            </div>
+        </a>
+    </div>
+
+<!-- Quick Start Section -->
+<section class="quick-start-section animate-in">
+    <div class="quick-start-content">
+        <div class="quick-start-text">
+            <h3>Ready to Ace Your Next Interview?</h3>
+            <p>Jump straight into your personalized AI-driven session or explore company-specific practice modes tailored for your goals.</p>
+        </div>
+        <div class="quick-start-actions">
+            <a href="{{ url_for('skill_selection') }}" class="quick-start-btn primary">Start Practicing</a>
+            <a href="{{ url_for('company_selection') }}" class="quick-start-btn secondary">
+                Learn More
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path d="M5 12h14M12 5l7 7-7 7"/>
+                </svg>
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Add some JavaScript for enhanced interactions -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add scroll animations
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver(function(entries) {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+
+    // Observe elements for animation
+    document.querySelectorAll('.practice-card, .visual-card, .feature-item').forEach(el => {
+        observer.observe(el);
+    });
+
+    // Add hover effects to cards
+    document.querySelectorAll('.practice-card').forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-8px) scale(1.02)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0) scale(1)';
+        });
+    });
+
+    // Animate typing indicator
+    const typingIndicator = document.querySelector('.typing-indicator');
+    if (typingIndicator) {
+        setInterval(() => {
+            typingIndicator.classList.toggle('active');
+        }, 2000);
+    }
+});
+</script>
+{% endblock %}

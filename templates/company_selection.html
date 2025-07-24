@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+
+{% block title %}Select a Company - Recon AI{% endblock %}
+
+{% block head %}
+{{ super() }}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/company_selection.css') }}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+{% endblock %}
+
+{% block content %}
+<div class="cs-page-container">
+    <div class="cs-header">
+        <h1>Choose Your Target Company</h1>
+        <p>Select a company to get personalized interview questions and practice sessions tailored to their unique culture and requirements.</p>
+    </div>
+
+    <div class="cs-search-wrapper">
+        <input type="text" id="cs-search-input" onkeyup="filterCompanies()" placeholder="Search for a company (e.g., Google, Amazon, Microsoft)..." class="cs-search-bar">
+        <i class="fas fa-search cs-search-icon"></i>
+    </div>
+
+    <div class="cs-grid" id="cs-company-grid">
+        
+        <a href="{{ url_for('setup_company', company='Google') }}" class="cs-card" data-name="Google" data-category="tech">
+            <div class="cs-logo-container">
+                <img src="https://cdn.worldvectorlogo.com/logos/google-1-1.svg" alt="Google Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Google</h3>
+                <p>Search • Cloud • AI/ML</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Amazon') }}" class="cs-card" data-name="Amazon" data-category="tech">
+            <div class="cs-logo-container">
+                <img src="https://cdn.worldvectorlogo.com/logos/amazon-1.svg" alt="Amazon Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Amazon</h3>
+                <p>E-commerce • AWS • Scale</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Microsoft') }}" class="cs-card" data-name="Microsoft" data-category="tech">
+            <div class="cs-logo-container">
+                <img src="https://cdn.worldvectorlogo.com/logos/microsoft-5.svg" alt="Microsoft Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Microsoft</h3>
+                <p>Cloud • Enterprise • OS</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Meta') }}" class="cs-card" data-name="Meta" data-category="tech">
+            <div class="cs-logo-container">
+                <img src="https://cdn.worldvectorlogo.com/logos/meta-1.svg" alt="Meta Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Meta</h3>
+                <p>Social • VR/AR • Metaverse</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Apple') }}" class="cs-card" data-name="Apple" data-category="tech">
+            <div class="cs-logo-container">
+                <img src="https://cdn.worldvectorlogo.com/logos/apple-14.svg" alt="Apple Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Apple</h3>
+                <p>Hardware • iOS • Design</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Netflix') }}" class="cs-card" data-name="Netflix" data-category="media">
+            <div class="cs-logo-container">
+                <img src="https://cdn.worldvectorlogo.com/logos/netflix-3.svg" alt="Netflix Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Netflix</h3>
+                <p>Streaming • Content • Entertainment</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Tesla') }}" class="cs-card" data-name="Tesla" data-category="automotive">
+            <div class="cs-logo-container">
+                <img src="https://cdn.worldvectorlogo.com/logos/tesla-9.svg" alt="Tesla Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Tesla</h3>
+                <p>Electric Vehicles • Energy • Innovation</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Uber') }}" class="cs-card" data-name="Uber" data-category="mobility">
+            <div class="cs-logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/5/58/Uber_logo_2018.svg" alt="Uber Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Uber</h3>
+                <p>Mobility • Logistics • Real-time</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Airbnb') }}" class="cs-card" data-name="Airbnb" data-category="travel">
+            <div class="cs-logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/6/69/Airbnb_Logo_Bélo.svg" alt="Airbnb Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Airbnb</h3>
+                <p>Marketplace • Travel • Hospitality</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Spotify') }}" class="cs-card" data-name="Spotify" data-category="media">
+            <div class="cs-logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg" alt="Spotify Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Spotify</h3>
+                <p>Music • Audio • Streaming</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Slack') }}" class="cs-card" data-name="Slack" data-category="productivity">
+            <div class="cs-logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/d/d5/Slack_icon_2019.svg" alt="Slack Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Slack</h3>
+                <p>Communication • Collaboration • Workplace</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Dropbox') }}" class="cs-card" data-name="Dropbox" data-category="storage">
+            <div class="cs-logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/c/cb/Dropbox_logo_2017.svg" alt="Dropbox Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Dropbox</h3>
+                <p>Cloud Storage • Sync • Collaboration</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Stripe') }}" class="cs-card" data-name="Stripe" data-category="fintech">
+            <div class="cs-logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Stripe</h3>
+                <p>Payments • Fintech • Developer Tools</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Discord') }}" class="cs-card" data-name="Discord" data-category="gaming">
+            <div class="cs-logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/Discord-Logo-Color.svg" alt="Discord Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Discord</h3>
+                <p>Gaming • Voice/Video • Community</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Figma') }}" class="cs-card" data-name="Figma" data-category="design">
+            <div class="cs-logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/3/33/Figma-logo.svg" alt="Figma Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Figma</h3>
+                <p>Design • Collaboration • Prototyping</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Notion') }}" class="cs-card" data-name="Notion" data-category="productivity">
+            <div class="cs-logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/4/45/Notion_app_logo.png" alt="Notion Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Notion</h3>
+                <p>Productivity • Notes • Knowledge Base</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Canva') }}" class="cs-card" data-name="Canva" data-category="design">
+            <div class="cs-logo-container">
+                <img src="https://upload.wikimedia.org/wikipedia/commons/0/08/Canva_icon_2021.svg" alt="Canva Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Canva</h3>
+                <p>Design • Creative Tools • Templates</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Salesforce') }}" class="cs-card" data-name="Salesforce" data-category="enterprise">
+            <div class="cs-logo-container">
+                <img src="https://cdn.worldvectorlogo.com/logos/salesforce-2.svg" alt="Salesforce Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Salesforce</h3>
+                <p>CRM • Cloud • Enterprise</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='LinkedIn') }}" class="cs-card" data-name="LinkedIn" data-category="social">
+            <div class="cs-logo-container">
+                <img src="https://cdn.worldvectorlogo.com/logos/linkedin-icon-2.svg" alt="LinkedIn Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>LinkedIn</h3>
+                <p>Professional Network • Careers • B2B</p>
+            </div>
+        </a>
+        
+        <a href="{{ url_for('setup_company', company='Twitter') }}" class="cs-card" data-name="Twitter" data-category="social">
+            <div class="cs-logo-container">
+                <img src="https://cdn.worldvectorlogo.com/logos/twitter-6.svg" alt="Twitter Logo" loading="lazy">
+            </div>
+            <div class="cs-card-info">
+                <h3>Twitter</h3>
+                <p>Social Media • Real-time • News</p>
+            </div>
+        </a>
+    </div>
+    
+    <div id="cs-no-results" style="display: none;">
+        <div class="cs-no-results-content">
+            <i class="fas fa-search cs-no-results-icon"></i>
+            <h2>No companies found</h2>
+            <p>Try searching for a different company or check your spelling.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+function filterCompanies() {
+    const input = document.getElementById('cs-search-input');
+    const filter = input.value.toLowerCase().trim();
+    const grid = document.getElementById('cs-company-grid');
+    const cards = grid.getElementsByClassName('cs-card');
+    let visibleCount = 0;
+
+    // Show all cards if search is empty
+    if (!filter) {
+        for (let i = 0; i < cards.length; i++) {
+            cards[i].style.display = "";
+            visibleCount++;
+        }
+    } else {
+        // Filter cards based on company name and category
+        for (let i = 0; i < cards.length; i++) {
+            const card = cards[i];
+            const name = card.getAttribute('data-name').toLowerCase();
+            const category = card.getAttribute('data-category').toLowerCase();
+            const cardText = card.textContent.toLowerCase();
+            
+            if (name.includes(filter) || category.includes(filter) || cardText.includes(filter)) {
+                card.style.display = "";
+                visibleCount++;
+            } else {
+                card.style.display = "none";
+            }
+        }
+    }
+    
+    // Show/hide no results message
+    const noResultsMsg = document.getElementById('cs-no-results');
+    if (visibleCount === 0) {
+        noResultsMsg.style.display = 'block';
+    } else {
+        noResultsMsg.style.display = 'none';
+    }
+}
+
+// Add keyboard navigation
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('cs-search-input');
+    const cards = document.querySelectorAll('.cs-card');
+    
+    // Focus first visible card on Enter
+    searchInput.addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') {
+            const firstVisibleCard = document.querySelector('.cs-card[style=""], .cs-card:not([style*="display: none"])');
+            if (firstVisibleCard) {
+                firstVisibleCard.focus();
+            }
+        }
+    });
+    
+    // Add loading state for images
+    const images = document.querySelectorAll('.cs-logo-container img');
+    images.forEach(img => {
+        img.addEventListener('load', function() {
+            this.style.opacity = '1';
+        });
+        img.addEventListener('error', function() {
+            this.style.display = 'none';
+        });
+    });
+});
+</script>
+{% endblock %}

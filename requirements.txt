@@ -1,0 +1,10 @@
+fastapi
+uvicorn[standard]
+python-dotenv
+requests
+pydub
+google-generativeai
+azure-cognitiveservices-speech
+Jinja2
+Flask
+watchdog

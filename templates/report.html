@@ -1,0 +1,292 @@
+{% extends 'base.html' %}
+
+{% block title %}Interview Report - Recon AI{% endblock %}
+
+{% block extra_css %}
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<style>
+    body {
+        background-color: #f0f2f5;
+        color: #333;
+    }
+    .report-container {
+        max-width: 1200px;
+        margin: 40px auto;
+        padding: 30px;
+        background-color: #ffffff;
+        border-radius: 12px;
+        box-shadow: 0 8px 24px rgba(0,0,0,0.1);
+    }
+    .report-header {
+        text-align: center;
+        margin-bottom: 40px;
+        border-bottom: 1px solid #e0e0e0;
+        padding-bottom: 20px;
+    }
+    .report-header h1 {
+        font-size: 2.8em;
+        color: #1a237e;
+        font-weight: 700;
+    }
+    .report-header p {
+        font-size: 1.2em;
+        color: #555;
+    }
+    .summary-section {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 30px;
+        margin-bottom: 50px;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 8px;
+    }
+    .chart-container {
+        padding: 20px;
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+    }
+    .questions-section h2 {
+        font-size: 2em;
+        color: #1a237e;
+        margin-bottom: 20px;
+        text-align: center;
+    }
+    .question-block {
+        background-color: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        margin-bottom: 15px;
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+    .question-block:hover {
+        box-shadow: 0 6px 18px rgba(0,0,0,0.1);
+        transform: translateY(-3px);
+    }
+    .question-header {
+        padding: 20px;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #f8f9fa;
+    }
+    .question-header h3 {
+        margin: 0;
+        font-size: 1.2em;
+        color: #333;
+    }
+    .question-header .toggle-icon {
+        font-size: 1.5em;
+        transition: transform 0.3s ease;
+    }
+    .question-details {
+        padding: 20px;
+        border-top: 1px solid #e0e0e0;
+        display: none; /* Hidden by default */
+    }
+    .detail-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+    }
+    .detail-box {
+        padding: 15px;
+        border-radius: 6px;
+    }
+    .detail-box h4 {
+        font-size: 1.1em;
+        margin-top: 0;
+        margin-bottom: 10px;
+        color: #1a237e;
+    }
+    .model-answer { background-color: #e3f2fd; }
+    .user-answer { background-color: #e8f5e9; }
+    .ai-feedback { grid-column: 1 / -1; background-color: #fffde7; }
+    .ai-feedback h4 { color: #f57f17; }
+    .scores {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+        padding: 15px;
+        background-color: #f1f3f5;
+        border-radius: 6px;
+    }
+    .score-item { text-align: center; }
+    .score-item .score-value { font-size: 1.8em; font-weight: 700; color: #1a237e; }
+    .score-item .score-label { font-size: 0.9em; color: #555; }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="report-container">
+    <div id="scores-data" data-overall="{{ overall_scores | tojson | safe }}" style="display: none;"></div>
+    <div class="report-header">
+        <h1>Your Interview Report</h1>
+        <p>A detailed analysis of your performance.</p>
+    </div>
+
+    <section class="summary-section">
+        <div class="chart-container">
+            <canvas id="overallScoresChart"></canvas>
+        </div>
+        <div class="chart-container">
+            <canvas id="averageScorePie"></canvas>
+        </div>
+    </section>
+
+    <section class="questions-section">
+        <h2>Detailed Question Analysis</h2>
+        {% for q in report_data.questions %}
+        <div class="question-block" id="question-{{ q.index }}">
+            <div class="question-header" onclick="toggleDetails('details-{{ q.index }}', 'icon-{{ q.index }}')">
+                <h3>Question {{ q.index + 1 if q.index > 0 else 'Introduction' }}: {{ q.text | truncate(80) }}</h3>
+                <span class="toggle-icon" id="icon-{{ q.index }}">+</span>
+            </div>
+            <div class="question-details" id="details-{{ q.index }}">
+                {% if q.analysis and not q.analysis.error %}
+                    <div class="scores">
+                        <div class="score-item">
+                            <div class="score-value">{{ q.analysis.relevance_score }}%</div>
+                            <div class="score-label">Relevance</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-value">{{ q.analysis.clarity_score }}%</div>
+                            <div class="score-label">Clarity</div>
+                        </div>
+                        <div class="score-item">
+                            <div class="score-value">{{ q.analysis.confidence_score }}%</div>
+                            <div class="score-label">Confidence</div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="detail-grid">
+                        <div class="detail-box model-answer">
+                            <h4>Model Answer</h4>
+                            <p>{{ q.model_answer }}</p>
+                        </div>
+                        <div class="detail-box user-answer">
+                            <h4>Your Answer</h4>
+                            <p>{{ q.user_transcript }}</p>
+                            {% if q.audio_url %}
+                                <audio controls src="{{ q.audio_url }}" style="width: 100%; margin-top: 10px;"></audio>
+                            {% endif %}
+                        </div>
+                        <div class="detail-box ai-feedback">
+                            <h4>AI Feedback</h4>
+                            <p><strong>Feedback:</strong> {{ q.analysis.feedback }}</p>
+                            <p><strong>Suggestion:</strong> {{ q.analysis.suggestion }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <p>Analysis for this question is not available.</p>
+                    <p><strong>Your Answer:</strong> {{ q.user_transcript }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </section>
+</div>
+
+<script>
+    function toggleDetails(detailsId, iconId) {
+        const details = document.getElementById(detailsId);
+        const icon = document.getElementById(iconId);
+        if (details.style.display === 'block') {
+            details.style.display = 'none';
+            icon.textContent = '+';
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            details.style.display = 'block';
+            icon.textContent = '-';
+            icon.style.transform = 'rotate(180deg)';
+        }
+    }
+
+    // --- Charts ---
+    document.addEventListener('DOMContentLoaded', function() {
+        const scoresDataElement = document.getElementById('scores-data');
+        const overallScores = JSON.parse(scoresDataElement.dataset.overall);
+        
+        // Bar Chart for Overall Scores
+        const barCtx = document.getElementById('overallScoresChart').getContext('2d');
+        new Chart(barCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Relevance', 'Clarity', 'Confidence'],
+                datasets: [{
+                    label: 'Average Score',
+                    data: [overallScores.relevance, overallScores.clarity, overallScores.confidence],
+                    backgroundColor: [
+                        'rgba(54, 162, 235, 0.6)',
+                        'rgba(75, 192, 192, 0.6)',
+                        'rgba(153, 102, 255, 0.6)'
+                    ],
+                    borderColor: [
+                        'rgba(54, 162, 235, 1)',
+                        'rgba(75, 192, 192, 1)',
+                        'rgba(153, 102, 255, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Average Performance Metrics',
+                        font: { size: 18 }
+                    },
+                    legend: { display: false }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: { display: true, text: 'Score (%)' }
+                    }
+                }
+            }
+        });
+
+        // Pie Chart for Average Score
+        const averageScore = (overallScores.relevance + overallScores.clarity + overallScores.confidence) / 3;
+        const pieCtx = document.getElementById('averageScorePie').getContext('2d');
+        new Chart(pieCtx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Overall Score', 'Remaining'],
+                datasets: [{
+                    data: [averageScore, 100 - averageScore],
+                    backgroundColor: [
+                        'rgba(255, 159, 64, 0.7)',
+                        'rgba(230, 230, 230, 0.7)'
+                    ],
+                    borderColor: [
+                        'rgba(255, 159, 64, 1)',
+                        'rgba(200, 200, 200, 1)'
+                    ],
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Average Overall Score',
+                        font: { size: 18 }
+                    },
+                    tooltip: { enabled: false }
+                },
+                cutout: '70%'
+            }
+        });
+    });
+</script>
+{% endblock %}
